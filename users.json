@@ -1,1 +1,67 @@
-{}
+{
+  "__admin__": {
+    "is_admin": true,
+    "banned": false,
+    "strikes": 0,
+    "onboarding": {
+      "step": null,
+      "pending_channel_id": null
+    },
+    "channels": [
+      {
+        "channel_id": -1002328517911,
+        "title": "Galaxy Gamez",
+        "blog_feed_url": "https://galaxygamez01.blogspot.com/feeds/posts/default?max-results=500",
+        "paused": false,
+        "posted": [],
+        "interval_hours": 3,
+        "last_posted_at": null
+      },
+      {
+        "channel_id": -1001959406158,
+        "title": "Galaxy Gamez",
+        "blog_feed_url": "https://galaxygamez01.blogspot.com/feeds/posts/default?max-results=500",
+        "paused": false,
+        "posted": [],
+        "interval_hours": 3,
+        "last_posted_at": null
+      },
+      {
+        "channel_id": -1002392805703,
+        "title": "Galaxy Gamez",
+        "blog_feed_url": "https://galaxygamez01.blogspot.com/feeds/posts/default?max-results=500",
+        "paused": false,
+        "posted": [],
+        "interval_hours": 3,
+        "last_posted_at": null
+      },
+      {
+        "channel_id": -1002685110307,
+        "title": "Galaxy Gamez",
+        "blog_feed_url": "https://galaxygamez01.blogspot.com/feeds/posts/default?max-results=500",
+        "paused": false,
+        "posted": [],
+        "interval_hours": 3,
+        "last_posted_at": null
+      },
+      {
+        "channel_id": -1002353908594,
+        "title": "Galaxy Gamez",
+        "blog_feed_url": "https://galaxygamez01.blogspot.com/feeds/posts/default?max-results=500",
+        "paused": false,
+        "posted": [],
+        "interval_hours": 3,
+        "last_posted_at": null
+      },
+      {
+        "channel_id": -1002721819829,
+        "title": "Galaxy Gamez",
+        "blog_feed_url": "https://galaxygamez01.blogspot.com/feeds/posts/default?max-results=500",
+        "paused": false,
+        "posted": [],
+        "interval_hours": 3,
+        "last_posted_at": null
+      }
+    ]
+  }
+}
