@@ -74,7 +74,9 @@
     "onboarding": {
       "step": null,
       "pending_channel_id": null,
-      "estimate": {}
+      "estimate": {
+        "channels": 4
+      }
     },
     "channels": []
   }
