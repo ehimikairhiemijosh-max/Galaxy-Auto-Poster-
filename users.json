@@ -73,7 +73,8 @@
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
-      "pending_channel_id": null
+      "pending_channel_id": null,
+      "estimate": {}
     },
     "channels": []
   }
