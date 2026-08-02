@@ -94,6 +94,14 @@ def message_still_exists(chat_id, message_id):
     return True  # any other error (rate limit etc) - assume still there
 
 
+def forward_message(to_chat_id, from_chat_id, message_id):
+    return _post("forwardMessage", {
+        "chat_id": to_chat_id,
+        "from_chat_id": from_chat_id,
+        "message_id": message_id,
+    })
+
+
 def get_updates(offset):
     try:
         resp = requests.get(
