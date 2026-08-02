@@ -9,17 +9,24 @@ from datetime import datetime, timedelta
 from config import (
     BOT_TOKEN, ADMIN_CHAT_ID, GITHUB_TOKEN, GITHUB_REPOSITORY,
     FORCE_JOIN_CHATS, SUPPORT_HANDLE, STRIKE_LIMIT, BROADCAST_GRACE_HOURS,
-    API_BASE,
+    API_BASE, MAX_CHANNELS_FREE, MAX_CHANNELS_PAID, PAYMENT_INFO,
+    MIN_MONTHLY_PRICE_NAIRA, MIN_YEARLY_PRICE_NAIRA, GEMZ_PACKAGES,
 )
 from storage import (
     load_state, save_state, load_stats, load_users, save_users,
     get_user, load_broadcasts, save_broadcasts, now_iso,
+    load_redeem_codes, save_redeem_codes,
 )
 from telegram_api import (
     send_message, get_chat_member, get_chat, get_updates,
-    answer_callback, message_still_exists,
+    answer_callback, message_still_exists, forward_message,
 )
 from main import get_feed_entries, ensure_default_admin
+from terms import TERMS_TEXT
+from estimator import estimate_days, format_duration
+from textstyle import box
+import random
+import string
 
 CREDITS_LINE = (
     "\n\n┏━━━━━━━━━━━━━━━┓\n"
@@ -39,7 +46,9 @@ def public_keyboard():
             ["📊 Stats", "📡 Channels"],
             ["➕ Add Channel", "📰 Add Blog"],
             ["⏸️ My Channel Pause", "▶️ My Channel Resume"],
-            ["❓ Help"],
+            ["💎 My Gemz", "💰 Buy Gemz"],
+            ["🎁 Redeem Code", "📈 Estimate Usage"],
+            ["🐛 Report Bug", "❓ Help"],
         ],
         "resize_keyboard": True,
     }
@@ -54,6 +63,8 @@ def admin_keyboard():
             ["📡 Channels", "⏸️ Pause"],
             ["▶️ Resume", "📢 Broadcast"],
             ["👥 Users", "⚙️ Advanced"],
+            ["🎟️ Generate Code", "💳 Credit User"],
+            ["📈 Estimate Usage", "🐛 Report Bug"],
             ["❓ Help"],
         ],
         "resize_keyboard": True,
@@ -95,6 +106,47 @@ def schedule_days_keyboard():
     from config import SCHEDULE_DAY_OPTIONS
     row = [{"text": f"{d}d", "callback_data": f"sched_days_{d}"} for d in SCHEDULE_DAY_OPTIONS]
     return {"inline_keyboard": [row[i:i + 3] for i in range(0, len(row), 3)]}
+
+
+def posts_per_cycle_keyboard():
+    from config import POSTS_PER_CYCLE_OPTIONS
+    row = [{"text": f"{n} post{'s' if n != 1 else ''}", "callback_data": f"ppc_{n}"} for n in POSTS_PER_CYCLE_OPTIONS]
+    return {"inline_keyboard": [row[i:i + 2] for i in range(0, len(row), 2)]}
+
+
+def terms_keyboard():
+    return {"inline_keyboard": [[{"text": "✅ I Agree", "callback_data": "accept_terms"}]]}
+
+
+def estimate_channels_keyboard():
+    return {"inline_keyboard": [[{"text": str(n), "callback_data": f"est_ch_{n}"} for n in range(1, 5)]]}
+
+
+def estimate_unit_keyboard():
+    return {
+        "inline_keyboard": [
+            [{"text": "⏰ Hours", "callback_data": "est_unit_hours"}],
+            [{"text": "📅 Days", "callback_data": "est_unit_days"}],
+        ]
+    }
+
+
+def estimate_hours_keyboard():
+    from config import SCHEDULE_HOUR_OPTIONS
+    row = [{"text": f"{h}hr", "callback_data": f"est_hours_{h}"} for h in SCHEDULE_HOUR_OPTIONS]
+    return {"inline_keyboard": [row[i:i + 3] for i in range(0, len(row), 3)]}
+
+
+def estimate_days_keyboard():
+    from config import SCHEDULE_DAY_OPTIONS
+    row = [{"text": f"{d}d", "callback_data": f"est_days_{d}"} for d in SCHEDULE_DAY_OPTIONS]
+    return {"inline_keyboard": [row[i:i + 3] for i in range(0, len(row), 3)]}
+
+
+def estimate_ppc_keyboard():
+    from config import POSTS_PER_CYCLE_OPTIONS
+    row = [{"text": f"{n} post{'s' if n != 1 else ''}", "callback_data": f"est_ppc_{n}"} for n in POSTS_PER_CYCLE_OPTIONS]
+    return {"inline_keyboard": [row[i:i + 2] for i in range(0, len(row), 2)]}
 
 
 # ---------------- FORCE-JOIN CHECK ----------------
@@ -324,6 +376,11 @@ def cmd_help(chat_id, user_id, users):
             f"│ 📢 Broadcast — send ad/promo to every channel\n"
             f"│ 👥 Users — list connected users\n"
             f"│\n"
+            f"├➤ 𝐆𝐄𝐌𝐙\n"
+            f"│ 🎟️ Generate Code — create a user-locked redeem code\n"
+            f"│ 💳 Credit User — manually credit Gemz after payment\n"
+            f"│ /unlockchannels <user_id> — raise a user's channel limit to {MAX_CHANNELS_PAID}\n"
+            f"│\n"
             f"╰➤ 𝐀𝐃𝐕𝐀𝐍𝐂𝐄𝐃 (⚙️ menu)\n"
             f"   🗑️ Reset History · 📜 Logs\n\n"
             f"⏱️ Commands are checked every ~5 min, not instantly."
@@ -338,16 +395,23 @@ def cmd_help(chat_id, user_id, users):
             f"│ ⏭️ Skip — skip your next unposted post\n"
             f"│ 🧪 Test — send a test message\n"
             f"│\n"
-            f"├➤ 𝐂𝐇𝐀𝐍𝐍𝐄𝐋\n"
+            f"├➤ 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 (max {MAX_CHANNELS_FREE} free, {MAX_CHANNELS_PAID} paid)\n"
             f"│ 📊 Stats — today's stats\n"
             f"│ 📡 Channels — check your channel access\n"
             f"│ ➕ Add Channel — connect your channel\n"
             f"│ 📰 Add Blog — set your Blogger feed\n"
             f"│\n"
+            f"├➤ 𝐆𝐄𝐌𝐙\n"
+            f"│ 💎 My Gemz — check your balance\n"
+            f"│ 💰 Buy Gemz — payment info + purchase\n"
+            f"│ 🎁 Redeem Code — use a code from the team\n"
+            f"│ 📈 Estimate Usage — see how long Gemz will last\n"
+            f"│\n"
             f"╰➤ ⏸️/▶️ My Channel Pause/Resume\n\n"
-            f"⚠️ This bot is FREE. In exchange, sponsored posts may appear "
-            f"on your channel occasionally. Deleting one within 4hrs = "
-            f"channel removed. 3 strikes = permanent ban.\n\n"
+            f"🐛 Report Bug — send an issue straight to the team\n\n"
+            f"⚠️ This bot is FREE at the free tier. In exchange, sponsored "
+            f"posts may appear on your channel occasionally. Deleting one "
+            f"within 4hrs = channel removed. 3 strikes = permanent ban.\n\n"
             f"⏱️ Commands are checked every ~5 min, not instantly."
             + CREDITS_LINE
         )
@@ -358,6 +422,25 @@ def cmd_help(chat_id, user_id, users):
 
 def cmd_add_channel(chat_id, user_id, users):
     u = get_user(users, user_id)
+
+    if not is_admin(user_id):
+        limit = MAX_CHANNELS_PAID if u.get("extra_channel_slots") else MAX_CHANNELS_FREE
+        if len(u["channels"]) >= limit:
+            if limit == MAX_CHANNELS_FREE:
+                send_message(
+                    chat_id,
+                    f"You're at the free limit of {MAX_CHANNELS_FREE} channel(s). "
+                    f"To unlock up to {MAX_CHANNELS_PAID}, contact {SUPPORT_HANDLE}."
+                    + CREDITS_LINE,
+                )
+            else:
+                send_message(
+                    chat_id,
+                    f"You've reached the maximum of {MAX_CHANNELS_PAID} channels per account."
+                    + CREDITS_LINE,
+                )
+            return
+
     u["onboarding"]["step"] = "awaiting_channel"
     send_message(
         chat_id,
@@ -407,6 +490,7 @@ def handle_onboarding_message(chat_id, user_id, users, message):
             "paused": True,  # stays paused until a blog feed + schedule are set
             "posted": [],
             "interval_hours": None,
+            "posts_per_cycle": None,
             "last_posted_at": None,
         })
         u["onboarding"]["step"] = None
@@ -475,6 +559,224 @@ def handle_broadcast_message(chat_id, user_id, users, message):
     return True
 
 
+# ---------------- BUG REPORTS ----------------
+
+def cmd_report_bug(chat_id, user_id, users):
+    u = get_user(users, user_id)
+    u["onboarding"]["step"] = "awaiting_bug_report"
+    send_message(
+        chat_id,
+        "🐛 Describe the bug or issue you're facing - be as specific as possible "
+        "(what you tapped, what you expected, what happened instead). "
+        "It goes straight to the Galaxy Gamez team." + CREDITS_LINE,
+    )
+
+
+def handle_bug_report_message(chat_id, user_id, users, message):
+    u = get_user(users, user_id)
+    if u["onboarding"].get("step") != "awaiting_bug_report":
+        return False
+
+    text = message.get("text", "")
+    u["onboarding"]["step"] = None
+
+    admin_note = (
+        f"{box('BUG REPORT')}\n"
+        f"From user: {user_id}\n\n"
+        f"{text}"
+    )
+    send_message(ADMIN_CHAT_ID, admin_note)
+    send_message(chat_id, "✅ Bug report sent - thanks for the heads up." + CREDITS_LINE)
+    return True
+
+
+# ---------------- GEMZ: BALANCE, PURCHASE, PAYMENT PROOF ----------------
+
+def cmd_my_gemz(chat_id, user_id, users):
+    u = get_user(users, user_id)
+    send_message(chat_id, f"💎 Your balance: {u.get('gemz_balance', 0)} Gemz" + CREDITS_LINE)
+
+
+def cmd_buy_gemz(chat_id, user_id, users):
+    lines = [
+        box("BUY GEMZ"),
+        "",
+        f"Pay to:",
+        f"🏦 {PAYMENT_INFO['bank_name']}",
+        f"Acct: {PAYMENT_INFO['account_number']}",
+        f"Name: {PAYMENT_INFO['account_name']}",
+        "",
+        f"Minimum monthly package: ₦{MIN_MONTHLY_PRICE_NAIRA:,}",
+        f"Minimum yearly package: ₦{MIN_YEARLY_PRICE_NAIRA:,}",
+        "",
+        "⚠️ The Naira amount you pay is NOT the same number as the Gemz you "
+        "receive - Gemz packages are shown below, check the exact amount "
+        "before paying.",
+        "",
+        "⚠️ Gemz are spent based on YOUR actual usage (posts sent + channels "
+        "connected) - not a fixed calendar month. Use 📈 Estimate Usage to see "
+        "how long a purchase will realistically last for your setup before "
+        "you pay.",
+        "",
+        "After paying, send the payment screenshot here as a photo - it goes "
+        "straight to the team, no need to message anyone separately. You'll "
+        "be credited once confirmed.",
+    ]
+    if GEMZ_PACKAGES:
+        lines.insert(2, "")
+        for p in GEMZ_PACKAGES:
+            lines.insert(3, f"• {p['label']}: {p['gemz']} Gemz — ₦{p['price_naira']:,} ({p['period']})")
+
+    u = get_user(users, user_id)
+    u["onboarding"]["step"] = "awaiting_payment_proof"
+    send_message(chat_id, "\n".join(lines) + CREDITS_LINE)
+
+
+def handle_payment_proof_message(chat_id, user_id, users, message):
+    u = get_user(users, user_id)
+    if u["onboarding"].get("step") != "awaiting_payment_proof":
+        return False
+    if not message.get("photo"):
+        return False  # wait for an actual photo, ignore other text in the meantime
+
+    u["onboarding"]["step"] = None
+    forward_message(ADMIN_CHAT_ID, chat_id, message["message_id"])
+    send_message(ADMIN_CHAT_ID, f"👆 Payment screenshot from user {user_id}. Use 💳 Credit User once confirmed.")
+    send_message(chat_id, "✅ Screenshot received - awaiting confirmation. You'll be notified once credited." + CREDITS_LINE)
+    return True
+
+
+# ---------------- ADMIN: CREDIT USER / UNLOCK CHANNEL SLOTS ----------------
+
+def cmd_credit_start(chat_id, user_id, users):
+    if not is_admin(user_id):
+        send_message(chat_id, "Admin only.")
+        return
+    u = get_user(users, user_id)
+    u["onboarding"]["step"] = "awaiting_credit"
+    send_message(chat_id, "Send: <user_id> <gemz_amount>  e.g. 123456789 5000")
+
+
+def handle_credit_message(chat_id, user_id, users, message):
+    u = get_user(users, user_id)
+    if u["onboarding"].get("step") != "awaiting_credit":
+        return False
+    u["onboarding"]["step"] = None
+
+    parts = message.get("text", "").split()
+    if len(parts) != 2 or not parts[1].lstrip("-").isdigit():
+        send_message(chat_id, "Format: <user_id> <amount>")
+        return True
+
+    target_id, amount = parts[0], int(parts[1])
+    target = get_user(users, target_id)
+    target["gemz_balance"] = target.get("gemz_balance", 0) + amount
+    send_message(chat_id, f"✅ Credited {amount} Gemz to {target_id}. New balance: {target['gemz_balance']}")
+    send_message(target_id, f"💎 {amount} Gemz added to your balance by the team." + CREDITS_LINE)
+    return True
+
+
+def cmd_unlock_slots(chat_id, user_id, users, args_text):
+    if not is_admin(user_id):
+        send_message(chat_id, "Admin only.")
+        return
+    target_id = args_text.strip()
+    if not target_id.isdigit():
+        send_message(chat_id, "Usage: /unlockchannels <user_id>")
+        return
+    target = get_user(users, target_id)
+    target["extra_channel_slots"] = True
+    send_message(chat_id, f"✅ {target_id} can now connect up to {MAX_CHANNELS_PAID} channels.")
+    send_message(target_id, f"🔓 Your account can now connect up to {MAX_CHANNELS_PAID} channels." + CREDITS_LINE)
+
+
+# ---------------- REDEEM CODES ----------------
+
+def _generate_code():
+    return "".join(random.choices(string.ascii_uppercase + string.digits, k=8))
+
+
+def cmd_gencode_start(chat_id, user_id, users):
+    if not is_admin(user_id):
+        send_message(chat_id, "Admin only.")
+        return
+    u = get_user(users, user_id)
+    u["onboarding"]["step"] = "awaiting_gencode"
+    send_message(chat_id, "Send: <user_id> <gemz_amount>  e.g. 123456789 500")
+
+
+def handle_gencode_message(chat_id, user_id, users, message):
+    u = get_user(users, user_id)
+    if u["onboarding"].get("step") != "awaiting_gencode":
+        return False
+    u["onboarding"]["step"] = None
+
+    parts = message.get("text", "").split()
+    if len(parts) != 2 or not parts[1].isdigit():
+        send_message(chat_id, "Format: <user_id> <amount>")
+        return True
+
+    target_id, amount = parts[0], int(parts[1])
+    codes = load_redeem_codes()
+
+    # Prevent generating a new code while the user already has an unused one
+    active = [c for c in codes if c["user_id"] == target_id and not c["used"]]
+    if active:
+        send_message(
+            chat_id,
+            f"❌ {target_id} already has an unused code ({active[0]['code']}). "
+            f"They must redeem or you must void it before generating another.",
+        )
+        return True
+
+    code = _generate_code()
+    codes.append({
+        "code": code, "user_id": target_id, "amount": amount,
+        "used": False, "created_at": now_iso(),
+    })
+    save_redeem_codes(codes)
+    send_message(chat_id, f"✅ Code generated for {target_id}: {code} (worth {amount} Gemz). Send it to them directly.")
+    return True
+
+
+def cmd_redeem_start(chat_id, user_id, users):
+    u = get_user(users, user_id)
+    u["onboarding"]["step"] = "awaiting_redeem"
+    send_message(chat_id, "🎁 Enter your redeem code:")
+
+
+def handle_redeem_message(chat_id, user_id, users, message):
+    u = get_user(users, user_id)
+    if u["onboarding"].get("step") != "awaiting_redeem":
+        return False
+    u["onboarding"]["step"] = None
+
+    entered = message.get("text", "").strip().upper()
+    codes = load_redeem_codes()
+    match = next((c for c in codes if c["code"] == entered and c["user_id"] == str(user_id)), None)
+
+    if not match:
+        send_message(chat_id, "❌ Invalid code, or this code isn't assigned to you." + CREDITS_LINE)
+        return True
+    if match["used"]:
+        send_message(chat_id, "❌ This code has already been used and can't be redeemed again." + CREDITS_LINE)
+        return True
+
+    match["used"] = True
+    save_redeem_codes(codes)
+    u["gemz_balance"] = u.get("gemz_balance", 0) + match["amount"]
+    send_message(chat_id, f"✅ Redeemed! +{match['amount']} Gemz. New balance: {u['gemz_balance']}" + CREDITS_LINE)
+    return True
+
+
+# ---------------- USAGE ESTIMATOR ----------------
+
+def cmd_estimate_start(chat_id, user_id, users):
+    u = get_user(users, user_id)
+    u["onboarding"]["estimate"] = {}
+    send_message(chat_id, "📈 How many channels are you running?", reply_markup=estimate_channels_keyboard())
+
+
 def check_broadcast_strikes(users):
     """Run every cycle. Checks broadcasts older than the grace period to see
     if they were deleted, and applies strikes/bans."""
@@ -532,6 +834,13 @@ TEXT_COMMANDS = {
     "➕ Add Channel": cmd_add_channel,
     "📰 Add Blog": cmd_add_blog,
     "📢 Broadcast": cmd_broadcast_start,
+    "/reportbug": cmd_report_bug, "🐛 Report Bug": cmd_report_bug,
+    "💎 My Gemz": cmd_my_gemz, "/mygemz": cmd_my_gemz,
+    "💰 Buy Gemz": cmd_buy_gemz, "/buygemz": cmd_buy_gemz,
+    "🎁 Redeem Code": cmd_redeem_start, "/redeem": cmd_redeem_start,
+    "📈 Estimate Usage": cmd_estimate_start, "/estimate": cmd_estimate_start,
+    "🎟️ Generate Code": cmd_gencode_start,
+    "💳 Credit User": cmd_credit_start,
 }
 
 
@@ -554,7 +863,16 @@ def handle_message(message, users):
             send_join_gate(chat_id)
             return
 
+    u = get_user(users, user_id)
+    if not is_admin(user_id) and not u.get("terms_accepted"):
+        send_message(chat_id, TERMS_TEXT, reply_markup=terms_keyboard())
+        return
+
     text = message.get("text", "").strip()
+
+    if text.startswith("/unlockchannels"):
+        cmd_unlock_slots(chat_id, user_id, users, text[len("/unlockchannels"):])
+        return
 
     if text == "⚙️ Advanced" and is_admin(user_id):
         send_message(chat_id, "Advanced menu:", reply_markup=advanced_keyboard())
@@ -575,9 +893,19 @@ def handle_message(message, users):
         cmd_help(chat_id, user_id, users)
         return
 
+    if handle_payment_proof_message(chat_id, user_id, users, message):
+        return
     if handle_onboarding_message(chat_id, user_id, users, message):
         return
     if handle_broadcast_message(chat_id, user_id, users, message):
+        return
+    if handle_bug_report_message(chat_id, user_id, users, message):
+        return
+    if handle_gencode_message(chat_id, user_id, users, message):
+        return
+    if handle_credit_message(chat_id, user_id, users, message):
+        return
+    if handle_redeem_message(chat_id, user_id, users, message):
         return
 
     handler = TEXT_COMMANDS.get(text)
@@ -620,12 +948,91 @@ def handle_callback(callback, users):
         interval_hours = value if data.startswith("sched_hours_") else value * 24
         ch = u["channels"][-1]
         ch["interval_hours"] = interval_hours
-        ch["paused"] = False
         label = f"{value}hr" if data.startswith("sched_hours_") else f"{value} day{'s' if value != 1 else ''}"
         answer_callback(callback["id"], f"Set to every {label} ✅")
         send_message(
             chat_id,
-            f"All set ✅ Your channel will now auto-post every {label}." + CREDITS_LINE,
+            f"Interval set to every {label} ✅. Last step - how many posts per cycle?",
+            reply_markup=posts_per_cycle_keyboard(),
+        )
+        return
+
+    if data.startswith("ppc_"):
+        u = get_user(users, user_id)
+        if not u["channels"]:
+            answer_callback(callback["id"], "No channel found - start over with Add Channel.")
+            return
+        n = int(data.split("_", 1)[1])
+        ch = u["channels"][-1]
+        ch["posts_per_cycle"] = n
+        ch["paused"] = False
+        answer_callback(callback["id"], f"Set to {n} post(s) per cycle ✅")
+        interval_hours = ch.get("interval_hours", 3)
+        interval_label = f"{interval_hours}hr" if interval_hours < 24 else f"{interval_hours // 24} day(s)"
+        send_message(
+            chat_id,
+            f"All set ✅ Your channel will post {n} game(s) every {interval_label}." + CREDITS_LINE,
+            reply_markup=keyboard_for(user_id),
+        )
+        return
+
+    if data == "accept_terms":
+        u = get_user(users, user_id)
+        u["terms_accepted"] = True
+        answer_callback(callback["id"], "Thanks!")
+        send_message(chat_id, "✅ Terms accepted. Welcome to Galaxy Gamez!", reply_markup=keyboard_for(user_id))
+        return
+
+    if data.startswith("est_ch_"):
+        n = int(data.rsplit("_", 1)[1])
+        u = get_user(users, user_id)
+        u["onboarding"]["estimate"] = {"channels": n}
+        answer_callback(callback["id"])
+        send_message(chat_id, "Now pick your posting schedule:", reply_markup=estimate_unit_keyboard())
+        return
+
+    if data == "est_unit_hours":
+        answer_callback(callback["id"])
+        send_message(chat_id, "Pick your posting interval:", reply_markup=estimate_hours_keyboard())
+        return
+
+    if data == "est_unit_days":
+        answer_callback(callback["id"])
+        send_message(chat_id, "Pick your posting interval:", reply_markup=estimate_days_keyboard())
+        return
+
+    if data.startswith("est_hours_") or data.startswith("est_days_"):
+        value = int(data.rsplit("_", 1)[1])
+        interval_hours = value if data.startswith("est_hours_") else value * 24
+        u = get_user(users, user_id)
+        u["onboarding"].setdefault("estimate", {})["interval_hours"] = interval_hours
+        answer_callback(callback["id"])
+        send_message(chat_id, "Last one - posts per cycle?", reply_markup=estimate_ppc_keyboard())
+        return
+
+    if data.startswith("est_ppc_"):
+        n = int(data.rsplit("_", 1)[1])
+        u = get_user(users, user_id)
+        est = u["onboarding"].get("estimate", {})
+        channels = est.get("channels")
+        interval_hours = est.get("interval_hours")
+        u["onboarding"]["estimate"] = {}
+        answer_callback(callback["id"])
+
+        if not channels or not interval_hours:
+            send_message(chat_id, "Something went wrong - start over with 📈 Estimate Usage.")
+            return
+
+        d5000 = estimate_days(5000, channels, interval_hours, n)
+        d10000 = estimate_days(10000, channels, interval_hours, n)
+        interval_label = f"{interval_hours}hr" if interval_hours < 24 else f"{interval_hours // 24} day(s)"
+        send_message(
+            chat_id,
+            f"{box('USAGE ESTIMATE')}\n\n"
+            f"Setup: {channels} channel(s), {n} post(s) every {interval_label}\n\n"
+            f"5,000 Gemz lasts: {format_duration(d5000)}\n"
+            f"10,000 Gemz lasts: {format_duration(d10000)}\n\n"
+            f"Tap 💰 Buy Gemz when ready." + CREDITS_LINE,
             reply_markup=keyboard_for(user_id),
         )
         return
@@ -643,8 +1050,9 @@ def main():
     users = load_users()
     users = ensure_default_admin(users)
 
-    # Make sure broadcasts.json always exists so the workflow's git add never fails
+    # Make sure broadcasts.json/redeem_codes.json always exist so the workflow's git add never fails
     save_broadcasts(load_broadcasts())
+    save_redeem_codes(load_redeem_codes())
 
     updates = get_updates(offset)
     if updates:

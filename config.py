@@ -51,6 +51,35 @@ SCHEDULE_HOUR_OPTIONS = [1, 3, 6, 12, 24]
 SCHEDULE_DAY_OPTIONS = [2, 3, 5, 7]
 DEFAULT_INTERVAL_HOURS = 3  # Josh's own channels
 
+POSTS_PER_CYCLE_OPTIONS = [1, 2, 3, 5]
+DEFAULT_POSTS_PER_CYCLE = 3  # Josh's own channels
+
+# ---------------- GEMZ COST FORMULA (used once Step 2 currency is built) ----------------
+GEMZ_COST_PER_POST = 1          # deducted every time a post actually sends
+GEMZ_COST_PER_CHANNEL_PER_DAY = 2  # flat daily upkeep per active connected channel
+
+# ---------------- CHANNEL LIMITS ----------------
+MAX_CHANNELS_FREE = 2    # non-admin users, free tier
+MAX_CHANNELS_PAID = 4    # non-admin hard cap even after paying for more slots
+# Admin (Josh) has no limit.
+
+# ---------------- PAYMENTS ----------------
+PAYMENT_INFO = {
+    "bank_name": "OPAY",
+    "account_number": "9071662919",
+    "account_name": "Josh Ehimika-Irhiemi",
+}
+
+# Floor prices - any package labelled "monthly"/"yearly" must be priced at
+# or above these, regardless of how many Gemz it contains. A Naira amount
+# is NOT 1:1 with a Gemz amount - Josh sets the actual exchange himself.
+MIN_MONTHLY_PRICE_NAIRA = 5000
+MIN_YEARLY_PRICE_NAIRA = 10000
+
+# Josh fills in real packages here once pricing is finalized. Each entry:
+# {"label": ..., "gemz": <amount>, "price_naira": <amount>, "period": "monthly"/"yearly"}
+GEMZ_PACKAGES = []
+
 # ---------------- BROADCAST / STRIKE SYSTEM ----------------
 BROADCAST_GRACE_HOURS = 4    # user has this long before deleting a broadcast counts against them
 STRIKE_LIMIT = 3             # 3rd strike = permanent ban

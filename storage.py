@@ -79,6 +79,9 @@ def get_user(users, user_id):
             "is_admin": False,
             "banned": False,
             "strikes": 0,
+            "terms_accepted": False,
+            "gemz_balance": 0,
+            "extra_channel_slots": False,
             "onboarding": {"step": None, "pending_channel_id": None},
             "channels": [],
         }
@@ -112,3 +115,16 @@ def save_broadcasts(data):
 
 def now_iso():
     return datetime.utcnow().isoformat()
+
+
+# ---------------- REDEEM CODES ----------------
+# [{"code": "ABC123", "user_id": "...", "amount": 500, "used": false, "created_at": iso}]
+REDEEM_CODES_FILE = "redeem_codes.json"
+
+
+def load_redeem_codes():
+    return load_json(REDEEM_CODES_FILE, [])
+
+
+def save_redeem_codes(data):
+    save_json(REDEEM_CODES_FILE, data)
