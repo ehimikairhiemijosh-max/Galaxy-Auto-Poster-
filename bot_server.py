@@ -17,12 +17,15 @@ git_sync.ensure_repo()
 os.chdir(git_sync.REPO_DIR)
 
 from flask import Flask
-from config import BOT_TOKEN, ADMIN_CHAT_ID
+from config import BOT_TOKEN, ADMIN_CHAT_ID, API_BASE
 from storage import load_state, save_state, load_users, save_users
 from bot_commands import (
     handle_message, handle_callback, ensure_default_admin,
     check_broadcast_strikes,
 )
+
+import requests
+requests.post(f"{API_BASE}/deleteWebhook", data={"drop_pending_updates": False}, timeout=15)
 
 app = Flask(__name__)
 POLL_INTERVAL = 2  # seconds between getUpdates calls - feels instant
@@ -63,7 +66,7 @@ def poll_loop():
                 save_users(users)
                 git_sync.push_changes(
                     "Bot state update [skip ci]",
-                    ["state.json", "users.json", "broadcasts.json"],
+                    ["state.json", "users.json", "broadcasts.json", "redeem_codes.json"],
                 )
         except Exception as e:
             print(f"Poll loop error: {e}")
