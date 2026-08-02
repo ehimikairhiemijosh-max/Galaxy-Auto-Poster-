@@ -74,12 +74,21 @@ def save_users(users):
 
 def get_user(users, user_id):
     user_id = str(user_id)
+
+    # Redirect Josh's real Telegram ID to the __admin__ record - his 6
+    # channels live under "__admin__" (set up by ensure_default_admin in
+    # main.py), so commands must resolve to that same key, not create a
+    # separate empty record under his personal ID.
+    from config import ADMIN_CHAT_ID
+    if ADMIN_CHAT_ID and user_id == str(ADMIN_CHAT_ID):
+        user_id = "__admin__"
+
     if user_id not in users:
         users[user_id] = {
-            "is_admin": False,
+            "is_admin": (user_id == "__admin__"),
             "banned": False,
             "strikes": 0,
-            "terms_accepted": False,
+            "terms_accepted": (user_id == "__admin__"),
             "gemz_balance": 0,
             "extra_channel_slots": False,
             "onboarding": {"step": None, "pending_channel_id": None},
