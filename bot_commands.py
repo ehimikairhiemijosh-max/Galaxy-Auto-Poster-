@@ -24,6 +24,7 @@ from telegram_api import (
 from main import get_feed_entries, ensure_default_admin
 from terms import TERMS_TEXT
 from estimator import estimate_days, format_duration
+from feed_discovery import discover_feed
 from textstyle import box
 import random
 import string
@@ -112,6 +113,15 @@ def posts_per_cycle_keyboard():
     from config import POSTS_PER_CYCLE_OPTIONS
     row = [{"text": f"{n} post{'s' if n != 1 else ''}", "callback_data": f"ppc_{n}"} for n in POSTS_PER_CYCLE_OPTIONS]
     return {"inline_keyboard": [row[i:i + 2] for i in range(0, len(row), 2)]}
+
+
+def caption_format_keyboard():
+    return {
+        "inline_keyboard": [
+            [{"text": "✅ Use Default Format", "callback_data": "caption_default"}],
+            [{"text": "✏️ Create My Own Format", "callback_data": "caption_custom"}],
+        ]
+    }
 
 
 def terms_keyboard():
@@ -399,7 +409,7 @@ def cmd_help(chat_id, user_id, users):
             f"│ 📊 Stats — today's stats\n"
             f"│ 📡 Channels — check your channel access\n"
             f"│ ➕ Add Channel — connect your channel\n"
-            f"│ 📰 Add Blog — set your Blogger feed\n"
+            f"│ 📰 Add Blog — set your website/feed\n"
             f"│\n"
             f"├➤ 𝐆𝐄𝐌𝐙\n"
             f"│ 💎 My Gemz — check your balance\n"
@@ -460,7 +470,12 @@ def cmd_add_blog(chat_id, user_id, users):
         send_message(chat_id, "Add your channel first with ➕ Add Channel.")
         return
     u["onboarding"]["step"] = "awaiting_blog"
-    send_message(chat_id, "Send your Blogger feed URL, e.g.\nhttps://yourblog.blogspot.com/feeds/posts/default?max-results=500")
+    send_message(
+        chat_id,
+        "Send your website link - WordPress, Blogger, Medium, Ghost, or any "
+        "RSS-enabled site all work. Just paste the normal site URL, we'll "
+        "find your feed automatically.\n\ne.g. https://yourwebsite.com",
+    )
 
 
 def handle_onboarding_message(chat_id, user_id, users, message):
@@ -491,22 +506,56 @@ def handle_onboarding_message(chat_id, user_id, users, message):
             "posted": [],
             "interval_hours": None,
             "posts_per_cycle": None,
+            "caption_template": None,
             "last_posted_at": None,
         })
         u["onboarding"]["step"] = None
-        send_message(chat_id, "Channel connected ✅. Now send 📰 Add Blog to set your Blogger feed.")
+        send_message(chat_id, "Channel connected ✅. Now send 📰 Add Blog to set your website/feed.")
         return True
 
     if step == "awaiting_blog":
         text = message.get("text", "").strip()
-        if not text.startswith("http"):
-            send_message(chat_id, "That doesn't look like a valid feed URL. Try again.")
+        if len(text) < 4:
+            send_message(chat_id, "That doesn't look like a website. Try again.")
             return True
-        u["channels"][-1]["blog_feed_url"] = text
+
+        send_message(chat_id, "Checking your site for a feed, one moment...")
+        feed_url = discover_feed(text)
+
+        if not feed_url:
+            send_message(
+                chat_id,
+                "Couldn't find a working feed on that site. Double-check the "
+                "link, or if you already know your exact feed URL, paste that "
+                "instead." + CREDITS_LINE,
+            )
+            return True
+
+        u["channels"][-1]["blog_feed_url"] = feed_url
         u["onboarding"]["step"] = None
         send_message(
             chat_id,
-            "Blog feed set ✅. Last step - how often should this channel post?",
+            f"Feed found ✅ ({feed_url})\n\nNow, how should your posts look? "
+            f"You can use our default clean format, or write your own.",
+            reply_markup=caption_format_keyboard(),
+        )
+        return True
+
+    if step == "awaiting_caption_template":
+        text = message.get("text", "")
+        if "{link}" not in text:
+            send_message(
+                chat_id,
+                "Your format needs to include {link} somewhere so the post "
+                "actually leads to your content. Try again - you can also "
+                "use {title}." + CREDITS_LINE,
+            )
+            return True
+        u["channels"][-1]["caption_template"] = text
+        u["onboarding"]["step"] = None
+        send_message(
+            chat_id,
+            "Format saved ✅. Last step - how often should this channel post?",
             reply_markup=schedule_unit_keyboard(),
         )
         return True
@@ -883,9 +932,10 @@ def handle_message(message, users):
     if text in ("/start", "/help") and text == "/start":
         welcome = (
             f"❏ {BOT_NAME}\n\n"
-            f"I auto-post fresh PPSSPP games to your Telegram channel every "
-            f"few hours — connect your channel + Blogger feed and I take it "
-            f"from there.\n\n"
+            f"I auto-post fresh content from your website straight to your "
+            f"Telegram channel, on your own schedule. Works with WordPress, "
+            f"Blogger, Medium, Ghost, or any RSS-enabled site — connect your "
+            f"channel + website and I take it from there.\n\n"
             f"Tap ❓ Help below to see everything I can do."
             + CREDITS_LINE
         )
@@ -927,6 +977,35 @@ def handle_callback(callback, users):
         else:
             answer_callback(callback["id"], "You're in! ✅")
             send_message(chat_id, "Access unlocked ✅ Welcome!", reply_markup=keyboard_for(user_id))
+        return
+
+    if data == "caption_default":
+        u = get_user(users, user_id)
+        if not u["channels"]:
+            answer_callback(callback["id"], "No channel found - start over with Add Channel.")
+            return
+        u["channels"][-1]["caption_template"] = None
+        answer_callback(callback["id"], "Default format set ✅")
+        send_message(
+            chat_id,
+            "Default format set ✅. Last step - how often should this channel post?",
+            reply_markup=schedule_unit_keyboard(),
+        )
+        return
+
+    if data == "caption_custom":
+        u = get_user(users, user_id)
+        if not u["channels"]:
+            answer_callback(callback["id"], "No channel found - start over with Add Channel.")
+            return
+        u["onboarding"]["step"] = "awaiting_caption_template"
+        answer_callback(callback["id"])
+        send_message(
+            chat_id,
+            "Type your own post format. Use {title} and {link} anywhere you "
+            "want them to appear - {link} is required.\n\n"
+            "Example:\n📢 {title}\n\nRead more: {link}",
+        )
         return
 
     if data == "sched_unit_hours":
