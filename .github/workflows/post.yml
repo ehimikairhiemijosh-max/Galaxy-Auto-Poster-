@@ -1,0 +1,45 @@
+name: Auto Post to Telegram
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run poster
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python main.py
+
+      - name: Save updated tracker files
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add users.json stats.json last_run_log.txt
+          if ! git diff --staged --quiet; then
+            git commit -m "Update after posting cycle"
+            for i in 1 2 3 4 5; do
+              git pull --rebase origin main && git push && break
+              echo "Push collided, retrying..."
+              sleep 5
+            done
+          else
+            echo "Nothing to save."
+          fi
