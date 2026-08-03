@@ -86,14 +86,14 @@
     "gemz_balance": 0,
     "extra_channel_slots": false,
     "onboarding": {
-      "step": "awaiting_blog",
+      "step": null,
       "pending_channel_id": null
     },
     "channels": [
       {
         "channel_id": -1004427720231,
         "title": "Connected channel",
-        "blog_feed_url": "",
+        "blog_feed_url": "https://galaxygamings.blogspot.com/feeds/posts/default",
         "paused": true,
         "posted": [],
         "interval_hours": null,
