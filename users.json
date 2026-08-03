@@ -86,9 +86,21 @@
     "gemz_balance": 0,
     "extra_channel_slots": false,
     "onboarding": {
-      "step": "awaiting_channel",
+      "step": null,
       "pending_channel_id": null
     },
-    "channels": []
+    "channels": [
+      {
+        "channel_id": -1004427720231,
+        "title": "Connected channel",
+        "blog_feed_url": "",
+        "paused": true,
+        "posted": [],
+        "interval_hours": null,
+        "posts_per_cycle": null,
+        "caption_template": null,
+        "last_posted_at": null
+      }
+    ]
   }
 }
