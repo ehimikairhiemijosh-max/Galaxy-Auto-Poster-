@@ -8,7 +8,7 @@
       "pending_channel_id": null,
       "estimate": {
         "channels": 4,
-        "interval_hours": 48
+        "interval_hours": 72
       }
     },
     "channels": [
