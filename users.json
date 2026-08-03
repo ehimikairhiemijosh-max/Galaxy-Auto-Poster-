@@ -6,10 +6,7 @@
     "onboarding": {
       "step": null,
       "pending_channel_id": null,
-      "estimate": {
-        "channels": 4,
-        "interval_hours": 1
-      }
+      "estimate": {}
     },
     "channels": [
       {
