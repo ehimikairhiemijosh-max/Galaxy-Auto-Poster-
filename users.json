@@ -13,9 +13,13 @@
         "title": "Galaxy Gamez",
         "blog_feed_url": "https://galaxygamez01.blogspot.com/feeds/posts/default?max-results=500",
         "paused": false,
-        "posted": [],
+        "posted": [
+          "https://galaxygamez01.blogspot.com/2025/06/wwe-2k25-ultimate-ppsspp-edition.html",
+          "https://galaxygamez01.blogspot.com/2025/06/gta-5-free-download-for-pc-android-2025.html",
+          "https://galaxygamez01.blogspot.com/2025/06/tekken-8-ppsspp-iso-file-best-fighting.html"
+        ],
         "interval_hours": 3,
-        "last_posted_at": null
+        "last_posted_at": "2026-08-03T11:28:46.357675"
       },
       {
         "channel_id": -1001959406158,
@@ -31,36 +35,52 @@
         "title": "Galaxy Gamez",
         "blog_feed_url": "https://galaxygamez01.blogspot.com/feeds/posts/default?max-results=500",
         "paused": false,
-        "posted": [],
+        "posted": [
+          "https://galaxygamez01.blogspot.com/2025/06/wwe-2k25-ultimate-ppsspp-edition.html",
+          "https://galaxygamez01.blogspot.com/2025/06/gta-5-free-download-for-pc-android-2025.html",
+          "https://galaxygamez01.blogspot.com/2025/06/tekken-8-ppsspp-iso-file-best-fighting.html"
+        ],
         "interval_hours": 3,
-        "last_posted_at": null
+        "last_posted_at": "2026-08-03T11:29:11.421626"
       },
       {
         "channel_id": -1002685110307,
         "title": "Galaxy Gamez",
         "blog_feed_url": "https://galaxygamez01.blogspot.com/feeds/posts/default?max-results=500",
         "paused": false,
-        "posted": [],
+        "posted": [
+          "https://galaxygamez01.blogspot.com/2025/06/wwe-2k25-ultimate-ppsspp-edition.html",
+          "https://galaxygamez01.blogspot.com/2025/06/gta-5-free-download-for-pc-android-2025.html",
+          "https://galaxygamez01.blogspot.com/2025/06/tekken-8-ppsspp-iso-file-best-fighting.html"
+        ],
         "interval_hours": 3,
-        "last_posted_at": null
+        "last_posted_at": "2026-08-03T11:29:18.951434"
       },
       {
         "channel_id": -1002353908594,
         "title": "Galaxy Gamez",
         "blog_feed_url": "https://galaxygamez01.blogspot.com/feeds/posts/default?max-results=500",
         "paused": false,
-        "posted": [],
+        "posted": [
+          "https://galaxygamez01.blogspot.com/2025/06/wwe-2k25-ultimate-ppsspp-edition.html",
+          "https://galaxygamez01.blogspot.com/2025/06/gta-5-free-download-for-pc-android-2025.html",
+          "https://galaxygamez01.blogspot.com/2025/06/tekken-8-ppsspp-iso-file-best-fighting.html"
+        ],
         "interval_hours": 3,
-        "last_posted_at": null
+        "last_posted_at": "2026-08-03T11:29:26.520882"
       },
       {
         "channel_id": -1002721819829,
         "title": "Galaxy Gamez",
         "blog_feed_url": "https://galaxygamez01.blogspot.com/feeds/posts/default?max-results=500",
         "paused": false,
-        "posted": [],
+        "posted": [
+          "https://galaxygamez01.blogspot.com/2025/06/wwe-2k25-ultimate-ppsspp-edition.html",
+          "https://galaxygamez01.blogspot.com/2025/06/gta-5-free-download-for-pc-android-2025.html",
+          "https://galaxygamez01.blogspot.com/2025/06/tekken-8-ppsspp-iso-file-best-fighting.html"
+        ],
         "interval_hours": 3,
-        "last_posted_at": null
+        "last_posted_at": "2026-08-03T11:29:34.072637"
       }
     ]
   },
@@ -95,11 +115,15 @@
         "title": "Connected channel",
         "blog_feed_url": "https://galaxygamings.blogspot.com/feeds/posts/default",
         "paused": false,
-        "posted": [],
+        "posted": [
+          "https://galaxygamings.blogspot.com/2024/08/550mb-dream-league-soccer-2025.html",
+          "https://galaxygamings.blogspot.com/2024/08/600mb-tekken-5-dark-resurrection-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/08/syphon-filter-dark-mirror-ppsspp.html"
+        ],
         "interval_hours": 24,
         "posts_per_cycle": 1,
         "caption_template": "\ud83d\udcdbGame Name: {title} \n\n\u2b07\ufe0f\ud83d\udcc2Download now: {link}",
-        "last_posted_at": null
+        "last_posted_at": "2026-08-03T11:29:45.730857"
       }
     ]
   }
