@@ -94,10 +94,10 @@
         "channel_id": -1004427720231,
         "title": "Connected channel",
         "blog_feed_url": "https://galaxygamings.blogspot.com/feeds/posts/default",
-        "paused": true,
+        "paused": false,
         "posted": [],
         "interval_hours": 24,
-        "posts_per_cycle": null,
+        "posts_per_cycle": 1,
         "caption_template": "\ud83d\udcdbGame Name: {title} \n\n\u2b07\ufe0f\ud83d\udcc2Download now: {link}",
         "last_posted_at": null
       }
