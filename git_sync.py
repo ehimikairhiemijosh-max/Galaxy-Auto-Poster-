@@ -15,9 +15,15 @@ from config import GITHUB_TOKEN, GITHUB_REPOSITORY
 REPO_DIR = "/tmp/repo" if os.environ.get("RENDER") else "."
 
 
-def _run(cmd, cwd=None):
-    result = subprocess.run(cmd, cwd=cwd or REPO_DIR, capture_output=True, text=True)
-    return result.returncode, result.stdout, result.stderr
+def _run(cmd, cwd=None, timeout=20):
+    try:
+        result = subprocess.run(
+            cmd, cwd=cwd or REPO_DIR, capture_output=True, text=True, timeout=timeout
+        )
+        return result.returncode, result.stdout, result.stderr
+    except subprocess.TimeoutExpired:
+        print(f"git_sync: command timed out: {' '.join(cmd)}")
+        return 1, "", "timeout"
 
 
 def ensure_repo():
