@@ -96,7 +96,7 @@
         "blog_feed_url": "https://galaxygamings.blogspot.com/feeds/posts/default",
         "paused": true,
         "posted": [],
-        "interval_hours": null,
+        "interval_hours": 1,
         "posts_per_cycle": null,
         "caption_template": "\ud83d\udcdbGame Name: {title} \n\n\u2b07\ufe0f\ud83d\udcc2Download now: {link}",
         "last_posted_at": null
