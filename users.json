@@ -77,5 +77,18 @@
       "estimate": {}
     },
     "channels": []
+  },
+  "8342607225": {
+    "is_admin": false,
+    "banned": false,
+    "strikes": 0,
+    "terms_accepted": false,
+    "gemz_balance": 0,
+    "extra_channel_slots": false,
+    "onboarding": {
+      "step": null,
+      "pending_channel_id": null
+    },
+    "channels": []
   }
 }
