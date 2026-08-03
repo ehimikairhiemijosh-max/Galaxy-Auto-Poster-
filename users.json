@@ -107,7 +107,7 @@
     "gemz_balance": 0,
     "extra_channel_slots": false,
     "onboarding": {
-      "step": "awaiting_caption_template",
+      "step": null,
       "pending_channel_id": null
     },
     "channels": [
@@ -123,7 +123,7 @@
         ],
         "interval_hours": 24,
         "posts_per_cycle": 1,
-        "caption_template": "\ud83d\udcdbGame Name: {title} \n\n\u2b07\ufe0f\ud83d\udcc2Download now: {link}",
+        "caption_template": "\ud83d\udcdbGame Name: {title}\n\nDownload link: {link}",
         "last_posted_at": "2026-08-03T11:29:45.730857"
       }
     ]
