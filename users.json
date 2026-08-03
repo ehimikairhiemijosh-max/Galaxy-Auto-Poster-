@@ -86,7 +86,7 @@
     "gemz_balance": 0,
     "extra_channel_slots": false,
     "onboarding": {
-      "step": null,
+      "step": "awaiting_blog",
       "pending_channel_id": null
     },
     "channels": [
