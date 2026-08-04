@@ -50,7 +50,7 @@
         "channel_id": -1004427720231,
         "title": "Connected channel",
         "blog_feed_url": "https://galaxygamings.blogspot.com/feeds/posts/default",
-        "paused": true,
+        "paused": false,
         "posted": [],
         "interval_hours": 1,
         "posts_per_cycle": 2,
