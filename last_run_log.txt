@@ -21,3 +21,4 @@
 [2026-08-04T16:54:38.050025] -1004427720231: OK - [1.1GB] eFootball PES 2025 season update | -1004427720231: OK - FIFA FC 2025 PPSSPP NEW TRANSFERS + PS 5 CAMERA | -1004427720231: OK - homebrew games for ppsspp
 [2026-08-04T18:40:42.689791] -1004427720231: OK - {320MB}Prince of Persia The Forgotten Sands highly compressed | -1004427720231: OK - WWE 2k24 PPSSPP HIGHLY COMPRESSED | -1004427720231: OK - {230MB} Spider Man Web Of Shadows Highly Compressed
 [2026-08-04T20:27:19.409045] -1004427720231: OK - {300MB} First Touch Soccer 2024 (FTS24) Apk obb | -1004427720231: OK - {600MB} oddworld stranger&amp;#39;s wrath apk mod highly compressed | -1004427720231: OK - Obscure The Aftermath PPSSPP Highly Compressed
+[2026-08-04T22:15:44.824084] -1004427720231: OK - {150MB} Wipeout Pure PPSSPP Highly Compressed | -1004427720231: OK - {300MB} G.I. Joe The Rise Of Cobra highly compressed | -1004427720231: OK - {99MB} Ratatouille PPSSPP Highly Compressed
