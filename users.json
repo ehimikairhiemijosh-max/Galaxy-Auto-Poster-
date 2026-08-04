@@ -39,10 +39,10 @@
     "banned": false,
     "strikes": 1,
     "terms_accepted": true,
-    "gemz_balance": 0,
+    "gemz_balance": 500,
     "extra_channel_slots": false,
     "onboarding": {
-      "step": "awaiting_redeem",
+      "step": null,
       "pending_channel_id": null
     },
     "channels": []
