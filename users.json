@@ -42,7 +42,7 @@
     "gemz_balance": 500,
     "extra_channel_slots": false,
     "onboarding": {
-      "step": "awaiting_bug_report",
+      "step": null,
       "pending_channel_id": null
     },
     "channels": [
