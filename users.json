@@ -4,7 +4,7 @@
     "banned": true,
     "strikes": 10,
     "onboarding": {
-      "step": null,
+      "step": "awaiting_gencode",
       "pending_channel_id": null,
       "estimate": {}
     },
@@ -42,7 +42,7 @@
     "gemz_balance": 0,
     "extra_channel_slots": false,
     "onboarding": {
-      "step": null,
+      "step": "awaiting_redeem",
       "pending_channel_id": null
     },
     "channels": []
