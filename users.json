@@ -42,7 +42,7 @@
     "gemz_balance": 500,
     "extra_channel_slots": false,
     "onboarding": {
-      "step": "awaiting_caption_template",
+      "step": null,
       "pending_channel_id": null
     },
     "channels": [
@@ -54,7 +54,7 @@
         "posted": [],
         "interval_hours": null,
         "posts_per_cycle": null,
-        "caption_template": null,
+        "caption_template": "\ud83d\udcdbGame Name: {title}\n\nRead more: {link}",
         "last_posted_at": null
       }
     ]
