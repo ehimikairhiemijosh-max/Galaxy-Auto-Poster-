@@ -9,6 +9,9 @@ cause duplicate replies / offset conflicts.)
 import os
 import threading
 import time
+import socket
+
+socket.setdefaulttimeout(25)  # global safety net - no single network call can hang forever
 
 os.environ["RENDER"] = "1"
 
@@ -30,6 +33,8 @@ requests.post(f"{API_BASE}/deleteWebhook", data={"drop_pending_updates": False},
 app = Flask(__name__)
 POLL_INTERVAL = 2  # seconds between getUpdates calls - feels instant
 
+_last_alive = {"ts": time.time()}
+
 
 @app.route("/")
 def health():
@@ -44,6 +49,7 @@ def poll_loop():
     HEARTBEAT_INTERVAL = 60
 
     while True:
+        _last_alive["ts"] = time.time()  # proof of life, checked by the watchdog below
         try:
             if time.time() - last_heartbeat >= HEARTBEAT_INTERVAL:
                 print(f"Heartbeat - poll loop alive at {now_iso()}")
@@ -92,7 +98,25 @@ def poll_loop():
         time.sleep(POLL_INTERVAL)
 
 
+def watchdog_loop():
+    """If the poll loop ever stops updating its proof-of-life timestamp
+    (hung on something we didn't anticipate), force-kill the whole process.
+    Render detects a crashed process and restarts it automatically within
+    seconds - this is separate from the Auto-Deploy setting we turned off,
+    so it's safe and won't reintroduce the redeploy-on-every-commit problem."""
+    WATCHDOG_CHECK_EVERY = 15
+    STUCK_THRESHOLD = 90
+
+    while True:
+        time.sleep(WATCHDOG_CHECK_EVERY)
+        stuck_for = time.time() - _last_alive["ts"]
+        if stuck_for > STUCK_THRESHOLD:
+            print(f"WATCHDOG: poll loop stuck for {stuck_for:.0f}s - forcing restart.")
+            os._exit(1)
+
+
 threading.Thread(target=poll_loop, daemon=True).start()
+threading.Thread(target=watchdog_loop, daemon=True).start()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
