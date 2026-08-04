@@ -18,3 +18,4 @@
 [2026-08-04T08:42:09.226575] nothing to post
 [2026-08-04T11:26:41.400015] nothing to post
 [2026-08-04T14:22:57.664722] -1004427720231: OK - [550MB] Dream League Soccer 2025 | -1004427720231: OK - [600MB] Tekken 5 Dark Resurrection PPSSPP | -1004427720231: OK - syphon filter dark mirror ppsspp compressed
+[2026-08-04T16:54:38.050025] -1004427720231: OK - [1.1GB] eFootball PES 2025 season update | -1004427720231: OK - FIFA FC 2025 PPSSPP NEW TRANSFERS + PS 5 CAMERA | -1004427720231: OK - homebrew games for ppsspp
