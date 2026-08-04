@@ -51,11 +51,15 @@
         "title": "Connected channel",
         "blog_feed_url": "https://galaxygamings.blogspot.com/feeds/posts/default",
         "paused": false,
-        "posted": [],
+        "posted": [
+          "https://galaxygamings.blogspot.com/2024/08/550mb-dream-league-soccer-2025.html",
+          "https://galaxygamings.blogspot.com/2024/08/600mb-tekken-5-dark-resurrection-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/08/syphon-filter-dark-mirror-ppsspp.html"
+        ],
         "interval_hours": 1,
         "posts_per_cycle": 2,
         "caption_template": "\ud83d\udcdbGame Name: {title}\n\nRead more: {link}",
-        "last_posted_at": null
+        "last_posted_at": "2026-08-04T14:22:57.664124"
       }
     ]
   }
