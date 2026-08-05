@@ -23,3 +23,4 @@
 [2026-08-04T20:27:19.409045] -1004427720231: OK - {300MB} First Touch Soccer 2024 (FTS24) Apk obb | -1004427720231: OK - {600MB} oddworld stranger&amp;#39;s wrath apk mod highly compressed | -1004427720231: OK - Obscure The Aftermath PPSSPP Highly Compressed
 [2026-08-04T22:15:44.824084] -1004427720231: OK - {150MB} Wipeout Pure PPSSPP Highly Compressed | -1004427720231: OK - {300MB} G.I. Joe The Rise Of Cobra highly compressed | -1004427720231: OK - {99MB} Ratatouille PPSSPP Highly Compressed
 [2026-08-05T00:06:45.164190] -1004427720231: OK - Top 20 psp games download highly compressed | -1004427720231: OK - UPDATED eFOOTBALL PES 2025 PPSSPP | -1004427720231: OK - {130MB} Highly Compressed Dragon Ball Evolution PPSSPP
+[2026-08-05T04:13:16.525737] -1004427720231: OK - (80MB) Highly Compressed Spider man friend or foe | -1004427720231: OK - Top 10 PSP ISO highly compressed PPSSPP Games | -1004427720231: OK - Ghost Recon Advanced Warfighter 2 psp iso
