@@ -28,3 +28,4 @@
 [2026-08-05T10:39:18.304982] -1004427720231: OK - Asphalt: urban Gt2 highly compressed psp iso file | -1004427720231: OK - [550MB] Dream League Soccer 2025 | -1004427720231: OK - [600MB] Tekken 5 Dark Resurrection PPSSPP
 [2026-08-05T12:56:23.902497] -1004427720231: OK - syphon filter dark mirror ppsspp compressed | -1004427720231: OK - [1.1GB] eFootball PES 2025 season update | -1004427720231: OK - FIFA FC 2025 PPSSPP NEW TRANSFERS + PS 5 CAMERA
 [2026-08-05T15:19:35.044716] -1004427720231: OK - homebrew games for ppsspp | -1004427720231: OK - {320MB}Prince of Persia The Forgotten Sands highly compressed | -1004427720231: OK - WWE 2k24 PPSSPP HIGHLY COMPRESSED
+[2026-08-05T17:42:49.982172] -1004427720231: OK - {230MB} Spider Man Web Of Shadows Highly Compressed | -1004427720231: OK - {300MB} First Touch Soccer 2024 (FTS24) Apk obb | -1004427720231: OK - {600MB} oddworld stranger&amp;#39;s wrath apk mod highly compressed
