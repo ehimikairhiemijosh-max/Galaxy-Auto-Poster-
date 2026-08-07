@@ -4,7 +4,7 @@
     "banned": true,
     "strikes": 10,
     "onboarding": {
-      "step": "awaiting_broadcast",
+      "step": null,
       "pending_channel_id": null,
       "estimate": {}
     },

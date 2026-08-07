@@ -82,5 +82,12 @@
     "message_id": 13,
     "sent_at": "2026-08-03T14:36:22.647917",
     "checked": true
+  },
+  {
+    "channel_id": -1004427720231,
+    "user_id": "8342607225",
+    "message_id": 97,
+    "sent_at": "2026-08-07T11:01:50.440271",
+    "checked": false
   }
 ]
