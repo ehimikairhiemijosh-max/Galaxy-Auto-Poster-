@@ -58,6 +58,16 @@ DEFAULT_POSTS_PER_CYCLE = 3  # Josh's own channels
 GEMZ_COST_PER_POST = 1          # deducted every time a post actually sends
 GEMZ_COST_PER_CHANNEL_PER_DAY = 2  # flat daily upkeep per active connected channel
 
+# ---------------- CUSTOM CAPTION TEMPLATES ----------------
+# Josh's own channels always use the fixed GAME NAME format in caption.py.
+# Everyone else gets this neutral default unless they set their own -
+# available placeholders: {title} and {link}
+DEFAULT_GENERIC_TEMPLATE = (
+    "📰 {title}\n\n"
+    "🔗 {link}\n\n"
+    "Powered by Galaxy Gamez Post Assistant"
+)
+
 # ---------------- CHANNEL LIMITS ----------------
 MAX_CHANNELS_FREE = 2    # non-admin users, free tier
 MAX_CHANNELS_PAID = 4    # non-admin hard cap even after paying for more slots
@@ -76,11 +86,34 @@ PAYMENT_INFO = {
 MIN_MONTHLY_PRICE_NAIRA = 5000
 MIN_YEARLY_PRICE_NAIRA = 10000
 
-# Josh fills in real packages here once pricing is finalized. Each entry:
-# {"label": ..., "gemz": <amount>, "price_naira": <amount>, "period": "monthly"/"yearly"}
-GEMZ_PACKAGES = []
+# Exchange rate: how many Naira buys 1 Gemz. Change this single number to
+# reprice everything below - Naira and Gemz are deliberately NOT 1:1.
+NAIRA_PER_GEMZ = 5
 
-# ---------------- BROADCAST / STRIKE SYSTEM ----------------
+# Gemz floor is calculated, not guessed: cheapest possible real usage is
+# 1 channel, posting once every 7 days, 1 post per cycle -
+#   (1 channel * GEMZ_COST_PER_CHANNEL_PER_DAY) + (1 post / 7 days * GEMZ_COST_PER_POST)
+#   = 2 + 0.143 =~ 2.14 Gemz/day
+# A full month of even that lightest possible usage is only ~65 Gemz, but
+# Josh set a hard floor of 1000 Gemz for the smallest sellable monthly
+# package regardless - that floor dominates and is used directly below.
+MIN_MONTHLY_GEMZ = 1000
+MIN_YEARLY_GEMZ = MIN_MONTHLY_GEMZ * 10  # yearly priced like "10 months for 12" - a real discount vs paying monthly x12
+
+# Real packages, priced at the exchange rate above, always at/above the
+# Naira floors. Edit gemz/price_naira here any time - NAIRA_PER_GEMZ stays
+# the single source of truth for the conversion.
+GEMZ_PACKAGES = [
+    {"label": "Monthly Starter", "gemz": MIN_MONTHLY_GEMZ, "price_naira": max(MIN_MONTHLY_GEMZ * NAIRA_PER_GEMZ, MIN_MONTHLY_PRICE_NAIRA), "period": "monthly"},
+    {"label": "Monthly Plus", "gemz": MIN_MONTHLY_GEMZ * 2, "price_naira": (MIN_MONTHLY_GEMZ * 2) * NAIRA_PER_GEMZ, "period": "monthly"},
+    {"label": "Monthly Pro", "gemz": MIN_MONTHLY_GEMZ * 5, "price_naira": (MIN_MONTHLY_GEMZ * 5) * NAIRA_PER_GEMZ, "period": "monthly"},
+    {"label": "Yearly Starter", "gemz": MIN_YEARLY_GEMZ, "price_naira": max(MIN_YEARLY_GEMZ * NAIRA_PER_GEMZ, MIN_YEARLY_PRICE_NAIRA), "period": "yearly"},
+    {"label": "Yearly Pro", "gemz": MIN_YEARLY_GEMZ * 2, "price_naira": (MIN_YEARLY_GEMZ * 2) * NAIRA_PER_GEMZ, "period": "yearly"},
+]
+
+# ---------------- REFERRALS ----------------
+REFERRAL_REWARD_GEMZ = 200  # both referrer and new user get this once the referral completes
+BOT_USERNAME = "GalaxyAut0RoBot"  # used to build referral links - update if the bot's @username changes
 BROADCAST_GRACE_HOURS = 4    # user has this long before deleting a broadcast counts against them
 STRIKE_LIMIT = 3             # 3rd strike = permanent ban
 

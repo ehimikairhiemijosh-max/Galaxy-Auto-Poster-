@@ -91,6 +91,8 @@ def get_user(users, user_id):
             "terms_accepted": (user_id == "__admin__"),
             "gemz_balance": 0,
             "extra_channel_slots": False,
+            "referred_by": None,
+            "referral_completed": False,
             "onboarding": {"step": None, "pending_channel_id": None},
             "channels": [],
         }

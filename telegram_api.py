@@ -102,6 +102,18 @@ def forward_message(to_chat_id, from_chat_id, message_id):
     })
 
 
+def copy_message(to_chat_id, from_chat_id, message_id):
+    """Copies a message to another chat WITHOUT the 'Forwarded from' label,
+    preserving all formatting (bold, italics, quotes, links) exactly as
+    typed - unlike manually re-sending plain .text, which strips every
+    bit of Telegram-native formatting."""
+    return _post("copyMessage", {
+        "chat_id": to_chat_id,
+        "from_chat_id": from_chat_id,
+        "message_id": message_id,
+    })
+
+
 def get_updates(offset):
     try:
         resp = requests.get(

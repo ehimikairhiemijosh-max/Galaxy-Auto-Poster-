@@ -24,7 +24,7 @@ from config import BOT_TOKEN, ADMIN_CHAT_ID, API_BASE
 from storage import load_state, save_state, load_users, save_users, now_iso
 from bot_commands import (
     handle_message, handle_callback, ensure_default_admin,
-    check_broadcast_strikes,
+    check_broadcast_strikes, check_referral_trials,
 )
 
 import requests
@@ -83,9 +83,10 @@ def poll_loop():
                 except Exception as e:
                     print(f"ERROR handling update: {e}")
 
-            check_broadcast_strikes(users)
+            strikes_changed = check_broadcast_strikes(users)
+            trials_changed = check_referral_trials(users)
 
-            if changed or updates:
+            if changed or updates or strikes_changed or trials_changed:
                 save_state(state)
                 save_users(users)
                 git_sync.push_changes(
