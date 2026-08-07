@@ -37,3 +37,4 @@
 [2026-08-06T08:41:59.528518] -1004427720231: OK - [600MB] Tekken 5 Dark Resurrection PPSSPP | -1004427720231: OK - syphon filter dark mirror ppsspp compressed | -1004427720231: OK - [1.1GB] eFootball PES 2025 season update
 [2026-08-06T11:26:05.611679] -1004427720231: OK - FIFA FC 2025 PPSSPP NEW TRANSFERS + PS 5 CAMERA | -1004427720231: OK - homebrew games for ppsspp | -1004427720231: OK - {320MB}Prince of Persia The Forgotten Sands highly compressed
 [2026-08-06T14:19:47.864230] -1004427720231: OK - WWE 2k24 PPSSPP HIGHLY COMPRESSED | -1004427720231: OK - {230MB} Spider Man Web Of Shadows Highly Compressed | -1004427720231: OK - {300MB} First Touch Soccer 2024 (FTS24) Apk obb
+[2026-08-07T00:42:24.358114] -1004427720231: OK - {600MB} oddworld stranger&amp;#39;s wrath apk mod highly compressed | -1004427720231: OK - Obscure The Aftermath PPSSPP Highly Compressed | -1004427720231: OK - {150MB} Wipeout Pure PPSSPP Highly Compressed
