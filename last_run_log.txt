@@ -40,3 +40,4 @@
 [2026-08-07T00:42:24.358114] -1004427720231: OK - {600MB} oddworld stranger&amp;#39;s wrath apk mod highly compressed | -1004427720231: OK - Obscure The Aftermath PPSSPP Highly Compressed | -1004427720231: OK - {150MB} Wipeout Pure PPSSPP Highly Compressed
 [2026-08-07T03:51:39.313881] -1004427720231: OK - {300MB} G.I. Joe The Rise Of Cobra highly compressed | -1004427720231: OK - {99MB} Ratatouille PPSSPP Highly Compressed | -1004427720231: OK - Top 20 psp games download highly compressed
 [2026-08-07T05:42:38.041304] -1004427720231: OK - UPDATED eFOOTBALL PES 2025 PPSSPP | -1004427720231: OK - {130MB} Highly Compressed Dragon Ball Evolution PPSSPP | -1004427720231: OK - (80MB) Highly Compressed Spider man friend or foe
+[2026-08-07T07:20:43.279423] -1004427720231: OK - Top 10 PSP ISO highly compressed PPSSPP Games | -1004427720231: OK - Ghost Recon Advanced Warfighter 2 psp iso | -1004427720231: OK - Red dead redemption mobile
