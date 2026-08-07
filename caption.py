@@ -38,3 +38,15 @@ def build_caption(entry):
         f"   𝐏𝐎𝐖𝐄𝐑𝐄𝐃 𝐁𝐘: 𝙂𝘼𝙇𝘼𝙓𝙔 𝙂𝘼𝙈𝙀𝙕\n"
         f"┗━━━━━━━━━━━━━━━┛"
     )
+
+
+def render_caption(entry, template):
+    """For every non-admin channel - fills a user-supplied or default
+    template. Only {title} and {link} are supported placeholders, kept
+    intentionally simple so it can't crash on a malformed custom template."""
+    try:
+        return template.format(title=entry.title, link=entry.link)
+    except (KeyError, IndexError):
+        # User's custom template had a typo/bad placeholder - fall back
+        # rather than crash the whole posting cycle for that channel.
+        return f"{entry.title}\n\n{entry.link}"
