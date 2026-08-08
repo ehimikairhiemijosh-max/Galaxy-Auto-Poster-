@@ -9,10 +9,12 @@ import requests
 from config import API_BASE, RETRY_ATTEMPTS
 
 
-def send_message(chat_id, text, reply_markup=None):
+def send_message(chat_id, text, reply_markup=None, parse_mode=None):
     payload = {"chat_id": chat_id, "text": text}
     if reply_markup:
         payload["reply_markup"] = _json(reply_markup)
+    if parse_mode:
+        payload["parse_mode"] = parse_mode
     return _post("sendMessage", payload)
 
 

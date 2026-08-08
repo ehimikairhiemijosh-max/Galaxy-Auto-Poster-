@@ -13,6 +13,8 @@ BUG FIX vs old version:
 
 import time
 from datetime import datetime, timedelta
+import re
+import requests
 import feedparser
 
 from config import (
@@ -29,6 +31,21 @@ from caption import build_caption, render_caption, extract_image
 
 MAX_FEED_ENTRIES = 1500  # safety cap so a feed with millions of posts can't exhaust memory/time
 
+_FEED_HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"}
+
+
+def _fetch_feed(url):
+    """Fetches a feed with a real browser User-Agent (some hosts, including
+    Blogger, are unreliable with feedparser's default fetcher/UA) and falls
+    back to feedparser's own fetcher if the request itself fails."""
+    try:
+        resp = requests.get(url, headers=_FEED_HEADERS, timeout=20)
+        resp.raise_for_status()
+        return feedparser.parse(resp.content)
+    except Exception as e:
+        print(f"_fetch_feed: requests failed ({e}), falling back to feedparser directly")
+        return feedparser.parse(url)
+
 
 def get_feed_entries(feed_url):
     """Returns entries OLDEST FIRST (strict chronological order).
@@ -44,14 +61,17 @@ def get_feed_entries(feed_url):
     seen_links = set()
 
     if "blogspot.com" in feed_url or "/feeds/posts/default" in feed_url:
+        # Blogger's feed API silently rejects/errors on very high max-results
+        # values - 500 is the known-safe ceiling (this was the original
+        # working value before the multi-user rewrite).
+        BLOGGER_SAFE_MAX = 500
         url = feed_url
         if "max-results" in url:
-            import re
-            url = re.sub(r"max-results=\d+", f"max-results={MAX_FEED_ENTRIES}", url)
+            url = re.sub(r"max-results=\d+", f"max-results={BLOGGER_SAFE_MAX}", url)
         else:
             sep = "&" if "?" in url else "?"
-            url = f"{url}{sep}max-results={MAX_FEED_ENTRIES}"
-        parsed = feedparser.parse(url)
+            url = f"{url}{sep}max-results={BLOGGER_SAFE_MAX}"
+        parsed = _fetch_feed(url)
         all_entries = list(parsed.entries)
 
     elif "/feed" in feed_url:
@@ -60,7 +80,7 @@ def get_feed_entries(feed_url):
         while len(all_entries) < MAX_FEED_ENTRIES:
             sep = "&" if "?" in feed_url else "?"
             page_url = feed_url if page == 1 else f"{feed_url}{sep}paged={page}"
-            parsed = feedparser.parse(page_url)
+            parsed = _fetch_feed(page_url)
             if not parsed.entries:
                 break
             new_ones = [e for e in parsed.entries if e.link not in seen_links]
@@ -73,7 +93,7 @@ def get_feed_entries(feed_url):
             if page > 60:  # hard stop - ~1500 posts at 25/page
                 break
     else:
-        parsed = feedparser.parse(feed_url)
+        parsed = _fetch_feed(feed_url)
         all_entries = list(parsed.entries)
 
     all_entries = all_entries[:MAX_FEED_ENTRIES]

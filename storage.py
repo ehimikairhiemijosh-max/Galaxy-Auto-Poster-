@@ -139,3 +139,14 @@ def load_redeem_codes():
 
 def save_redeem_codes(data):
     save_json(REDEEM_CODES_FILE, data)
+
+
+ORDERS_FILE = "orders.json"
+
+
+def load_orders():
+    return load_json(ORDERS_FILE, [])
+
+
+def save_orders(data):
+    save_json(ORDERS_FILE, data)

@@ -75,7 +75,7 @@ MAX_CHANNELS_PAID = 4    # non-admin hard cap even after paying for more slots
 
 # ---------------- PAYMENTS ----------------
 PAYMENT_INFO = {
-    "bank_name": "OPAY",
+    "bank_name": "OPay",
     "account_number": "9071662919",
     "account_name": "Josh Ehimika-Irhiemi",
 }
@@ -107,8 +107,11 @@ GEMZ_PACKAGES = [
     {"label": "Monthly Starter", "gemz": MIN_MONTHLY_GEMZ, "price_naira": max(MIN_MONTHLY_GEMZ * NAIRA_PER_GEMZ, MIN_MONTHLY_PRICE_NAIRA), "period": "monthly"},
     {"label": "Monthly Plus", "gemz": MIN_MONTHLY_GEMZ * 2, "price_naira": (MIN_MONTHLY_GEMZ * 2) * NAIRA_PER_GEMZ, "period": "monthly"},
     {"label": "Monthly Pro", "gemz": MIN_MONTHLY_GEMZ * 5, "price_naira": (MIN_MONTHLY_GEMZ * 5) * NAIRA_PER_GEMZ, "period": "monthly"},
+    {"label": "Monthly Max", "gemz": MIN_MONTHLY_GEMZ * 10, "price_naira": (MIN_MONTHLY_GEMZ * 10) * NAIRA_PER_GEMZ, "period": "monthly"},
     {"label": "Yearly Starter", "gemz": MIN_YEARLY_GEMZ, "price_naira": max(MIN_YEARLY_GEMZ * NAIRA_PER_GEMZ, MIN_YEARLY_PRICE_NAIRA), "period": "yearly"},
-    {"label": "Yearly Pro", "gemz": MIN_YEARLY_GEMZ * 2, "price_naira": (MIN_YEARLY_GEMZ * 2) * NAIRA_PER_GEMZ, "period": "yearly"},
+    {"label": "Yearly Plus", "gemz": MIN_YEARLY_GEMZ * 2, "price_naira": (MIN_YEARLY_GEMZ * 2) * NAIRA_PER_GEMZ, "period": "yearly"},
+    {"label": "Yearly Pro", "gemz": MIN_YEARLY_GEMZ * 5, "price_naira": (MIN_YEARLY_GEMZ * 5) * NAIRA_PER_GEMZ, "period": "yearly"},
+    {"label": "Yearly Max", "gemz": MIN_YEARLY_GEMZ * 10, "price_naira": (MIN_YEARLY_GEMZ * 10) * NAIRA_PER_GEMZ, "period": "yearly"},
 ]
 
 # ---------------- REFERRALS ----------------

@@ -16,7 +16,7 @@ from config import (
 from storage import (
     load_state, save_state, load_stats, load_users, save_users,
     get_user, load_broadcasts, save_broadcasts, now_iso,
-    load_redeem_codes, save_redeem_codes,
+    load_redeem_codes, save_redeem_codes, load_orders, save_orders,
 )
 from telegram_api import (
     send_message, get_chat_member, get_chat, get_updates,
@@ -65,10 +65,10 @@ def admin_keyboard():
             ["📊 Stats", "💚 Health"],
             ["📡 Channels", "⏸️ Pause"],
             ["▶️ Resume", "📢 Broadcast"],
-            ["👥 Users", "⚙️ Advanced"],
+            ["👥 Users", "💬 Message User"],
             ["🎟️ Generate Code", "💳 Credit User"],
-            ["📈 Estimate Usage", "🐛 Report Bug"],
-            ["❓ Help"],
+            ["⚙️ Advanced", "📈 Estimate Usage"],
+            ["🐛 Report Bug", "❓ Help"],
         ],
         "resize_keyboard": True,
     }
@@ -89,8 +89,13 @@ def cancel_only_keyboard():
 
 
 def force_join_keyboard():
-    rows = [[{"text": c["label"], "url": c["url"]}] for c in FORCE_JOIN_CHATS]
-    rows.append([{"text": "✅ I've Joined", "callback_data": "check_join"}])
+    rows = []
+    for c in FORCE_JOIN_CHATS:
+        info = get_chat(f"@{c['username']}")
+        title = info["result"]["title"] if info.get("ok") else c["label"]
+        icon = "📢" if info.get("ok") and info["result"].get("type") == "channel" else "💬"
+        rows.append([{"text": f"{icon} {title}", "url": c["url"]}])
+    rows.append([{"text": "✅ I've Joined - Continue", "callback_data": "check_join"}])
     return {"inline_keyboard": rows}
 
 
@@ -183,10 +188,16 @@ def missing_joins(user_id):
     return missing
 
 
-def send_join_gate(chat_id):
+def send_join_gate(chat_id, first_name=None):
+    greeting = f"👋 Hey {first_name}!" if first_name else "👋 Hey there!"
     send_message(
         chat_id,
-        "🔒 Join all of these first to use this bot:" + CREDITS_LINE,
+        f"{greeting} Welcome to {BOT_NAME}.\n\n"
+        f"Before we get started, please join the official Galaxy Gamez "
+        f"channels and groups below - this keeps you in the loop on "
+        f"updates, new features, and support. Once you've joined "
+        f"everything, tap the button underneath to continue."
+        + CREDITS_LINE,
         reply_markup=force_join_keyboard(),
     )
 
@@ -312,16 +323,16 @@ def cmd_channels(chat_id, user_id, users):
     if not u["channels"]:
         send_message(chat_id, "No channel added yet. Use ➕ Add Channel.")
         return
-    lines = ["CHANNEL CHECK"]
-    for ch in u["channels"]:
+    lines = [box("YOUR CHANNELS"), ""]
+    for i, ch in enumerate(u["channels"], start=1):
         r = get_chat(ch["channel_id"])
         if r.get("ok"):
             info = r["result"]
             title = info.get("title", "Untitled")
-            username = f"@{info['username']}" if info.get("username") else "private/no username"
-            lines.append(f"✓ {title} ({username}) - ID {ch['channel_id']} - reachable")
+            username = f"@{info['username']}" if info.get("username") else "private, no username"
+            lines.append(f"{i}. {title} ({username}) - ✅ reachable")
         else:
-            lines.append(f"✗ ID {ch['channel_id']} - {r.get('description', 'error')}")
+            lines.append(f"{i}. ID {ch['channel_id']} - ❌ {r.get('description', 'error')}")
     send_message(chat_id, "\n".join(lines))
 
 
@@ -627,7 +638,7 @@ def handle_broadcast_message(chat_id, user_id, users, message):
                 failed += 1
 
     save_broadcasts(broadcasts)
-    send_message(chat_id, f"Broadcast sent. Delivered: {sent}, Failed: {failed}")
+    send_message(chat_id, f"Broadcast sent. Delivered: {sent}, Failed: {failed}", reply_markup=keyboard_for(user_id))
     return True
 
 
@@ -663,7 +674,7 @@ def handle_bug_report_message(chat_id, user_id, users, message):
         f"{text}"
     )
     send_message(ADMIN_CHAT_ID, admin_note)
-    send_message(chat_id, "✅ Bug report sent - thanks for the heads up." + CREDITS_LINE)
+    send_message(chat_id, "✅ Bug report sent - thanks for the heads up." + CREDITS_LINE, reply_markup=keyboard_for(user_id))
     return True
 
 
@@ -675,38 +686,28 @@ def cmd_my_gemz(chat_id, user_id, users):
 
 
 def cmd_buy_gemz(chat_id, user_id, users):
-    lines = [
-        box("BUY GEMZ"),
-        "",
-        f"Pay to:",
-        f"🏦 {PAYMENT_INFO['bank_name']}",
-        f"Acct: {PAYMENT_INFO['account_number']}",
-        f"Name: {PAYMENT_INFO['account_name']}",
-        "",
-        f"Minimum monthly package: ₦{MIN_MONTHLY_PRICE_NAIRA:,}",
-        f"Minimum yearly package: ₦{MIN_YEARLY_PRICE_NAIRA:,}",
-        "",
-        "⚠️ The Naira amount you pay is NOT the same number as the Gemz you "
-        "receive - Gemz packages are shown below, check the exact amount "
-        "before paying.",
-        "",
-        "⚠️ Gemz are spent based on YOUR actual usage (posts sent + channels "
-        "connected) - not a fixed calendar month. Use 📈 Estimate Usage to see "
-        "how long a purchase will realistically last for your setup before "
-        "you pay.",
-        "",
-        "After paying, send the payment screenshot here as a photo - it goes "
-        "straight to the team, no need to message anyone separately. You'll "
-        "be credited once confirmed.",
-    ]
-    if GEMZ_PACKAGES:
-        lines.insert(2, "")
-        for p in GEMZ_PACKAGES:
-            lines.insert(3, f"• {p['label']}: {p['gemz']} Gemz — ₦{p['price_naira']:,} ({p['period']})")
+    if not GEMZ_PACKAGES:
+        send_message(chat_id, "Plans aren't set up yet - check back soon." + CREDITS_LINE)
+        return
 
-    u = get_user(users, user_id)
-    u["onboarding"]["step"] = "awaiting_payment_proof"
-    send_message(chat_id, "\n".join(lines) + CREDITS_LINE, reply_markup=cancel_only_keyboard())
+    send_message(
+        chat_id,
+        f"{box('GEMZ PLANS')}\n\n"
+        f"Pick the plan that fits how you post. Not sure? Try 📈 Estimate "
+        f"Usage first to see exactly how long each option realistically "
+        f"lasts for your setup." + CREDITS_LINE,
+        reply_markup=gemz_plans_keyboard(),
+    )
+
+
+def gemz_plans_keyboard():
+    rows = []
+    for i, p in enumerate(GEMZ_PACKAGES):
+        rows.append([{
+            "text": f"{p['label']} - {p['gemz']:,} Gemz (₦{p['price_naira']:,})",
+            "callback_data": f"buy_plan_{i}",
+        }])
+    return {"inline_keyboard": rows}
 
 
 def handle_payment_proof_message(chat_id, user_id, users, message):
@@ -717,9 +718,24 @@ def handle_payment_proof_message(chat_id, user_id, users, message):
         return False  # wait for an actual photo, ignore other text in the meantime
 
     u["onboarding"]["step"] = None
+    order_code = u["onboarding"].get("pending_order_code")
+    order_line = ""
+    if order_code:
+        orders = load_orders()
+        order = next((o for o in orders if o["order_code"] == order_code), None)
+        if order:
+            order_line = (
+                f"\nOrder: {order_code} - {order['plan_label']} "
+                f"({order['gemz']:,} Gemz, ₦{order['price_naira']:,})\n"
+            )
+
     forward_message(ADMIN_CHAT_ID, chat_id, message["message_id"])
-    send_message(ADMIN_CHAT_ID, f"👆 Payment screenshot from user {user_id}. Use 💳 Credit User once confirmed.")
-    send_message(chat_id, "✅ Screenshot received - awaiting confirmation. You'll be notified once credited." + CREDITS_LINE)
+    send_message(
+        ADMIN_CHAT_ID,
+        f"👆 Payment screenshot from user {user_id}.{order_line}\n"
+        f"Reply to them anytime with 💬 Message User - use 💳 Credit User once confirmed.",
+    )
+    send_message(chat_id, "✅ Screenshot received - awaiting confirmation. You'll be notified once credited." + CREDITS_LINE, reply_markup=keyboard_for(user_id))
     return True
 
 
@@ -742,13 +758,14 @@ def handle_credit_message(chat_id, user_id, users, message):
 
     parts = message.get("text", "").split()
     if len(parts) != 2 or not parts[1].lstrip("-").isdigit():
-        send_message(chat_id, "Format: <user_id> <amount>")
+        send_message(chat_id, "Format: <user_id> <amount>  e.g. 123456789 5000", reply_markup=cancel_only_keyboard())
+        u["onboarding"]["step"] = "awaiting_credit"
         return True
 
     target_id, amount = parts[0], int(parts[1])
     target = get_user(users, target_id)
     target["gemz_balance"] = target.get("gemz_balance", 0) + amount
-    send_message(chat_id, f"✅ Credited {amount} Gemz to {target_id}. New balance: {target['gemz_balance']}")
+    send_message(chat_id, f"✅ Credited {amount} Gemz to {target_id}. New balance: {target['gemz_balance']}", reply_markup=keyboard_for(user_id))
     send_message(target_id, f"💎 {amount} Gemz added to your balance by the team." + CREDITS_LINE)
     apply_referral_purchase_bonus(users, target_id, amount)
     return True
@@ -774,6 +791,10 @@ def _generate_code():
     return "".join(random.choices(string.ascii_uppercase + string.digits, k=8))
 
 
+def _generate_order_code():
+    return "GGZ-" + "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
+
+
 def cmd_gencode_start(chat_id, user_id, users):
     if not is_admin(user_id):
         send_message(chat_id, "Admin only.")
@@ -791,7 +812,8 @@ def handle_gencode_message(chat_id, user_id, users, message):
 
     parts = message.get("text", "").split()
     if len(parts) != 2 or not parts[1].isdigit():
-        send_message(chat_id, "Format: <user_id> <amount>")
+        send_message(chat_id, "Format: <user_id> <amount>  e.g. 123456789 500", reply_markup=cancel_only_keyboard())
+        u["onboarding"]["step"] = "awaiting_gencode"
         return True
 
     target_id, amount = parts[0], int(parts[1])
@@ -804,6 +826,7 @@ def handle_gencode_message(chat_id, user_id, users, message):
             chat_id,
             f"❌ {target_id} already has an unused code ({active[0]['code']}). "
             f"They must redeem or you must void it before generating another.",
+            reply_markup=keyboard_for(user_id),
         )
         return True
 
@@ -813,7 +836,7 @@ def handle_gencode_message(chat_id, user_id, users, message):
         "used": False, "created_at": now_iso(),
     })
     save_redeem_codes(codes)
-    send_message(chat_id, f"✅ Code generated for {target_id}: {code} (worth {amount} Gemz). Send it to them directly.")
+    send_message(chat_id, f"✅ Code generated for {target_id}: {code} (worth {amount} Gemz). Send it to them directly.", reply_markup=keyboard_for(user_id))
     return True
 
 
@@ -834,16 +857,16 @@ def handle_redeem_message(chat_id, user_id, users, message):
     match = next((c for c in codes if c["code"] == entered and c["user_id"] == str(user_id)), None)
 
     if not match:
-        send_message(chat_id, "❌ Invalid code, or this code isn't assigned to you." + CREDITS_LINE)
+        send_message(chat_id, "❌ Invalid code, or this code isn't assigned to you." + CREDITS_LINE, reply_markup=keyboard_for(user_id))
         return True
     if match["used"]:
-        send_message(chat_id, "❌ This code has already been used and can't be redeemed again." + CREDITS_LINE)
+        send_message(chat_id, "❌ This code has already been used and can't be redeemed again." + CREDITS_LINE, reply_markup=keyboard_for(user_id))
         return True
 
     match["used"] = True
     save_redeem_codes(codes)
     u["gemz_balance"] = u.get("gemz_balance", 0) + match["amount"]
-    send_message(chat_id, f"✅ Redeemed! +{match['amount']} Gemz. New balance: {u['gemz_balance']}" + CREDITS_LINE)
+    send_message(chat_id, f"✅ Redeemed! +{match['amount']} Gemz. New balance: {u['gemz_balance']}" + CREDITS_LINE, reply_markup=keyboard_for(user_id))
     return True
 
 
@@ -964,6 +987,48 @@ def cmd_my_referral(chat_id, user_id, users):
     )
 
 
+def cmd_message_user_start(chat_id, user_id, users):
+    if not is_admin(user_id):
+        send_message(chat_id, "Admin only.")
+        return
+    u = get_user(users, user_id)
+    u["onboarding"]["step"] = "awaiting_msguser_id"
+    send_message(chat_id, "Who do you want to message? Send their user ID.", reply_markup=cancel_only_keyboard())
+
+
+def handle_msguser_id_message(chat_id, user_id, users, message):
+    u = get_user(users, user_id)
+    if u["onboarding"].get("step") != "awaiting_msguser_id":
+        return False
+    target_id = message.get("text", "").strip()
+    if not target_id.isdigit():
+        send_message(chat_id, "That doesn't look like a user ID. Try again.", reply_markup=cancel_only_keyboard())
+        return True
+    u["onboarding"]["msg_target"] = target_id
+    u["onboarding"]["step"] = "awaiting_msguser_text"
+    send_message(
+        chat_id,
+        f"Send your message to {target_id} now. You can send as many "
+        f"messages as you like - tap ❌ Cancel when you're done.",
+        reply_markup=cancel_only_keyboard(),
+    )
+    return True
+
+
+def handle_msguser_text_message(chat_id, user_id, users, message):
+    u = get_user(users, user_id)
+    if u["onboarding"].get("step") != "awaiting_msguser_text":
+        return False
+    target_id = u["onboarding"].get("msg_target")
+    text = message.get("text", "")
+    if not text:
+        send_message(chat_id, "Send text only for now.", reply_markup=cancel_only_keyboard())
+        return True
+    send_message(target_id, f"💬 Message from the Galaxy Gamez team:\n\n{text}" + CREDITS_LINE)
+    send_message(chat_id, f"✅ Sent to {target_id}. Send another, or tap ❌ Cancel when done.", reply_markup=cancel_only_keyboard())
+    return True
+
+
 def cmd_estimate_start(chat_id, user_id, users):
     u = get_user(users, user_id)
     u["onboarding"]["estimate"] = {}
@@ -1052,6 +1117,7 @@ TEXT_COMMANDS = {
     "⏸️ My Channel Pause": cmd_my_pause,
     "▶️ My Channel Resume": cmd_my_resume,
     "/users": cmd_users, "👥 Users": cmd_users,
+    "💬 Message User": cmd_message_user_start, "/messageuser": cmd_message_user_start,
     "/help": cmd_help, "❓ Help": cmd_help,
     "➕ Add Channel": cmd_add_channel,
     "📰 Add Blog": cmd_add_blog,
@@ -1084,7 +1150,7 @@ def handle_message(message, users):
         missing = missing_joins(user_id)
         print(f"Force-join check for {user_id}: missing={[c['username'] for c in missing]}")
         if missing:
-            send_join_gate(chat_id)
+            send_join_gate(chat_id, message["from"].get("first_name"))
             return
 
     u = get_user(users, user_id)
@@ -1140,6 +1206,10 @@ def handle_message(message, users):
     if handle_bug_report_message(chat_id, user_id, users, message):
         return
     if handle_budget_message(chat_id, user_id, users, message):
+        return
+    if handle_msguser_id_message(chat_id, user_id, users, message):
+        return
+    if handle_msguser_text_message(chat_id, user_id, users, message):
         return
     if handle_gencode_message(chat_id, user_id, users, message):
         return
@@ -1321,6 +1391,50 @@ def handle_callback(callback, users):
             chat_id,
             "\n".join(lines) + CREDITS_LINE,
             reply_markup={"inline_keyboard": [[{"text": "💰 I Have A Budget (₦)", "callback_data": "enter_budget"}]]},
+        )
+        return
+
+    if data.startswith("buy_plan_"):
+        idx = int(data.rsplit("_", 1)[1])
+        if idx >= len(GEMZ_PACKAGES):
+            answer_callback(callback["id"], "That plan isn't available anymore.")
+            return
+        plan = GEMZ_PACKAGES[idx]
+        answer_callback(callback["id"])
+
+        order_code = _generate_order_code()
+        orders = load_orders()
+        orders.append({
+            "order_code": order_code,
+            "user_id": user_id,
+            "plan_label": plan["label"],
+            "gemz": plan["gemz"],
+            "price_naira": plan["price_naira"],
+            "status": "pending",
+            "created_at": now_iso(),
+        })
+        save_orders(orders)
+
+        u = get_user(users, user_id)
+        u["onboarding"]["step"] = "awaiting_payment_proof"
+        u["onboarding"]["pending_order_code"] = order_code
+
+        send_message(
+            chat_id,
+            f"{box('COMPLETE YOUR PAYMENT')}\n\n"
+            f"Plan: {plan['label']} ({plan['gemz']:,} Gemz)\n"
+            f"Amount: ₦{plan['price_naira']:,}\n\n"
+            f"Bank: {PAYMENT_INFO['bank_name']}\n"
+            f"Account name: {PAYMENT_INFO['account_name']}\n"
+            f"Account number: `{PAYMENT_INFO['account_number']}`\n\n"
+            f"⚠️ Important: add this order code to the transfer description/"
+            f"narration so your payment can be matched instantly:\n"
+            f"`{order_code}`\n\n"
+            f"Once paid, send the payment screenshot here as a photo - it "
+            f"goes straight to the team. You'll be credited once confirmed."
+            + CREDITS_LINE,
+            reply_markup=cancel_only_keyboard(),
+            parse_mode="Markdown",
         )
         return
 
