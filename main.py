@@ -140,15 +140,21 @@ def _legacy_posted_links():
 
 
 def ensure_default_admin(users):
-    """Make sure Josh's own 6 channels exist in the new multi-user system."""
+    """Make sure Josh's own 6 channels exist in the new multi-user system.
+    Also self-heals if the __admin__ record exists but somehow ended up
+    with an empty channel list - that state could otherwise persist
+    forever, since the old check only fired when the key was fully absent."""
     admin_id = "__admin__"
-    if admin_id not in users:
+    needs_setup = admin_id not in users or not users[admin_id].get("channels")
+
+    if needs_setup:
         legacy = _legacy_posted_links()
+        existing = users.get(admin_id, {})
         users[admin_id] = {
             "is_admin": True,
-            "banned": False,
-            "strikes": 0,
-            "onboarding": {"step": None, "pending_channel_id": None},
+            "banned": existing.get("banned", False),
+            "strikes": existing.get("strikes", 0),
+            "onboarding": existing.get("onboarding", {"step": None, "pending_channel_id": None}),
             "channels": [
                 {
                     "channel_id": cid,
@@ -164,6 +170,7 @@ def ensure_default_admin(users):
                 for cid in DEFAULT_CHANNEL_IDS
             ],
         }
+        print(f"ensure_default_admin: (re)initialized __admin__ with {len(DEFAULT_CHANNEL_IDS)} channels")
     return users
 
 
