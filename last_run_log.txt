@@ -86,3 +86,4 @@
 [2026-08-09T13:53:23.301647] nothing to post
 [2026-08-09T14:37:36.037070] nothing to post
 [2026-08-09T15:34:33.691235] nothing to post
+[2026-08-09T16:39:10.484527] -1004427720231: FAILED - Bad Request: invalid file HTTP URL specified: URL host is empty
