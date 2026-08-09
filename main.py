@@ -200,7 +200,7 @@ def run_posting_cycle(manual=False, only_user_id=None, users=None):
     for user_id, u in users.items():
         if only_user_id is not None and user_id != only_user_id:
             continue
-        if u.get("banned"):
+        if u.get("banned") and user_id != "__admin__":
             continue
         for ch in u.get("channels", []):
             if ch.get("paused"):

@@ -14,7 +14,6 @@ GITHUB_REPOSITORY = os.environ.get("GITHUB_REPOSITORY", "")
 # ---------------- JOSH'S OWN CHANNELS (default/admin account) ----------------
 DEFAULT_CHANNEL_IDS = [
     -1002328517911,  # main channel
-    -1001959406158,
     -1002392805703,
     -1002685110307,
     -1002353908594,

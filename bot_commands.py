@@ -1078,8 +1078,12 @@ def check_broadcast_strikes(users):
 
         b["checked"] = True
         changed = True
+
+        uid = b["user_id"]
+        if uid == "__admin__":
+            continue  # admin's own channels are never subject to strikes/bans
+
         if not message_still_exists(b["channel_id"], b["message_id"]):
-            uid = b["user_id"]
             u = get_user(users, uid)
             u["strikes"] = u.get("strikes", 0) + 1
             u["channels"] = [c for c in u["channels"] if c["channel_id"] != b["channel_id"]]
