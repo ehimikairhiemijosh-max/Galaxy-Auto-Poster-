@@ -124,7 +124,7 @@
     "gemz_balance": 500,
     "extra_channel_slots": false,
     "onboarding": {
-      "step": "awaiting_caption_template",
+      "step": null,
       "pending_channel_id": null,
       "estimate": {},
       "pending_order_code": "GGZ-IKEWN5"
@@ -138,7 +138,7 @@
         "posted": [],
         "interval_hours": null,
         "posts_per_cycle": null,
-        "caption_template": null,
+        "caption_template": "Game Name: {title}\n\nDownload link: {link}",
         "last_posted_at": null
       }
     ]
