@@ -124,9 +124,10 @@
     "gemz_balance": 500,
     "extra_channel_slots": false,
     "onboarding": {
-      "step": null,
+      "step": "awaiting_payment_proof",
       "pending_channel_id": null,
-      "estimate": {}
+      "estimate": {},
+      "pending_order_code": "GGZ-IKEWN5"
     },
     "channels": []
   }
