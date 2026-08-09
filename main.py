@@ -34,6 +34,9 @@ MAX_FEED_ENTRIES = 1500  # safety cap so a feed with millions of posts can't exh
 _FEED_HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"}
 
 
+LAST_FETCH_DEBUG = {}
+
+
 def _fetch_feed(url):
     """Fetches a feed with a real browser User-Agent (some hosts, including
     Blogger, are unreliable with feedparser's default fetcher/UA) and falls
@@ -42,13 +45,22 @@ def _fetch_feed(url):
     try:
         resp = requests.get(url, headers=_FEED_HEADERS, timeout=20)
         print(f"_fetch_feed: HTTP {resp.status_code}, {len(resp.content)} bytes")
+        LAST_FETCH_DEBUG["url"] = url
+        LAST_FETCH_DEBUG["http_status"] = resp.status_code
+        LAST_FETCH_DEBUG["bytes"] = len(resp.content)
         resp.raise_for_status()
         parsed = feedparser.parse(resp.content)
+        LAST_FETCH_DEBUG["entries"] = len(parsed.entries)
+        LAST_FETCH_DEBUG["bozo_exception"] = str(getattr(parsed, "bozo_exception", "")) if parsed.bozo else None
         print(f"_fetch_feed: parsed {len(parsed.entries)} entries, bozo={parsed.bozo}, bozo_exception={getattr(parsed, 'bozo_exception', None)}")
         return parsed
     except Exception as e:
+        LAST_FETCH_DEBUG["url"] = url
+        LAST_FETCH_DEBUG["error"] = str(e)
         print(f"_fetch_feed: requests path failed ({e}), falling back to feedparser directly")
         parsed = feedparser.parse(url)
+        LAST_FETCH_DEBUG["fallback_entries"] = len(parsed.entries)
+        LAST_FETCH_DEBUG["fallback_status"] = parsed.get("status")
         print(f"_fetch_feed: fallback parsed {len(parsed.entries)} entries, bozo={parsed.bozo}, status={parsed.get('status')}")
         return parsed
 
@@ -216,7 +228,8 @@ def run_posting_cycle(manual=False, only_user_id=None, users=None):
                     entry = next_unposted(entries, posted_links)
 
                 if entry is None:
-                    results.append(f"{ch['channel_id']}: no posts in feed")
+                    debug = f" | DEBUG: {LAST_FETCH_DEBUG}"
+                    results.append(f"{ch['channel_id']}: no posts in feed (feed had {len(entries)} entries total){debug}")
                     break
 
                 image_url = extract_image(entry)
