@@ -38,13 +38,19 @@ def _fetch_feed(url):
     """Fetches a feed with a real browser User-Agent (some hosts, including
     Blogger, are unreliable with feedparser's default fetcher/UA) and falls
     back to feedparser's own fetcher if the request itself fails."""
+    print(f"_fetch_feed: requesting {url}")
     try:
         resp = requests.get(url, headers=_FEED_HEADERS, timeout=20)
+        print(f"_fetch_feed: HTTP {resp.status_code}, {len(resp.content)} bytes")
         resp.raise_for_status()
-        return feedparser.parse(resp.content)
+        parsed = feedparser.parse(resp.content)
+        print(f"_fetch_feed: parsed {len(parsed.entries)} entries, bozo={parsed.bozo}, bozo_exception={getattr(parsed, 'bozo_exception', None)}")
+        return parsed
     except Exception as e:
-        print(f"_fetch_feed: requests failed ({e}), falling back to feedparser directly")
-        return feedparser.parse(url)
+        print(f"_fetch_feed: requests path failed ({e}), falling back to feedparser directly")
+        parsed = feedparser.parse(url)
+        print(f"_fetch_feed: fallback parsed {len(parsed.entries)} entries, bozo={parsed.bozo}, status={parsed.get('status')}")
+        return parsed
 
 
 def get_feed_entries(feed_url):
@@ -190,9 +196,11 @@ def run_posting_cycle(manual=False, only_user_id=None, users=None):
                     continue  # not due yet on this channel's own schedule
 
             feed_url = ch["blog_feed_url"]
+            print(f"Processing channel {ch['channel_id']} (owner {user_id}) - feed_url: {feed_url}")
             if feed_url not in feed_cache:
                 feed_cache[feed_url] = get_feed_entries(feed_url)
             entries = feed_cache[feed_url]
+            print(f"Channel {ch['channel_id']}: {len(entries)} entries available in feed")
 
             posted_links = ch.setdefault("posted", [])
             was_first_post_ever = len(posted_links) == 0
