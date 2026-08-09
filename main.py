@@ -286,8 +286,9 @@ def run_posting_cycle(manual=False, only_user_id=None, users=None):
     with open("last_run_log.txt", "a") as f:
         f.write(log_line + "\n")
 
-    return log_line
+    return results
 
 
 if __name__ == "__main__":
-    print(run_posting_cycle())
+    r = run_posting_cycle()
+    print(" | ".join(r) if r else "nothing to post")

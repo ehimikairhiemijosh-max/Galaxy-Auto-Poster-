@@ -35,7 +35,7 @@ CREDITS_LINE = (
     "   𝐂𝐑𝐄𝐃𝐈𝐓𝐒: @GALAXYGAMEZSUPPORT\n"
     "┗━━━━━━━━━━━━━━━┛"
 )
-BOT_NAME = "𝐆𝐀𝐋𝐀𝐗𝐘 𝐆𝐀𝐌𝐄𝐙 𝐀𝐒𝐒𝐈𝐒𝐓𝐀𝐍𝐓"
+BOT_NAME = "𝐆𝐀𝐋𝐀𝐗𝐘 𝐀𝐔𝐓𝐎 𝐏𝐎𝐒𝐓𝐄𝐑"
 
 
 # ---------------- KEYBOARDS ----------------
@@ -214,8 +214,37 @@ def cmd_post(chat_id, user_id, users):
     from main import run_posting_cycle
     target_id = "__admin__" if is_admin(user_id) else str(user_id)
     send_message(chat_id, "Starting a posting cycle now (your channels only)...")
-    result = run_posting_cycle(manual=True, only_user_id=target_id, users=users)
-    send_message(chat_id, f"Done.\n{result}")
+    results = run_posting_cycle(manual=True, only_user_id=target_id, users=users)
+    send_message(chat_id, _format_post_results(results, users, target_id))
+
+
+def _format_post_results(results, users, target_id):
+    if not results:
+        return "Done ✅ - nothing to post right now."
+
+    by_channel = {}
+    for line in results:
+        channel_id, _, detail = line.partition(": ")
+        by_channel.setdefault(channel_id, []).append(detail)
+
+    u = get_user(users, target_id)
+    channel_titles = {str(ch["channel_id"]): ch.get("title", "Channel") for ch in u.get("channels", [])}
+
+    out = [box("POSTING COMPLETE")]
+    total_ok = 0
+    for channel_id, details in by_channel.items():
+        title = channel_titles.get(channel_id, channel_id)
+        out.append(f"\n📢 {title}")
+        for d in details:
+            if d.startswith("OK - "):
+                out.append(f"  ✅ {d[5:]}")
+                total_ok += 1
+            elif d.startswith("FAILED"):
+                out.append(f"  ❌ {d}")
+            else:
+                out.append(f"  ℹ️ {d}")
+    out.append(f"\nTotal posted: {total_ok}")
+    return "\n".join(out)
 
 
 def cmd_refresh(chat_id, user_id, users):
@@ -315,7 +344,7 @@ def cmd_logs(chat_id, user_id, users):
 
 
 def cmd_test(chat_id, user_id, users):
-    send_message(chat_id, "Test message - the bot and command system are working." + CREDITS_LINE)
+    send_message(chat_id, "Test message - the bot and command system are working.")
 
 
 def cmd_channels(chat_id, user_id, users):
@@ -425,7 +454,7 @@ def cmd_help(chat_id, user_id, users):
             f"╰➤ 𝐀𝐃𝐕𝐀𝐍𝐂𝐄𝐃 (⚙️ menu)\n"
             f"   🗑️ Reset History · 📜 Logs\n\n"
             f"⏱️ Commands are checked every ~5 min, not instantly."
-            + CREDITS_LINE
+
         )
     else:
         text = (
@@ -454,7 +483,7 @@ def cmd_help(chat_id, user_id, users):
             f"posts may appear on your channel occasionally. Deleting one "
             f"within 4hrs = channel removed. 3 strikes = permanent ban.\n\n"
             f"⏱️ Commands are checked every ~5 min, not instantly."
-            + CREDITS_LINE
+
         )
     send_message(chat_id, text)
 
@@ -472,13 +501,13 @@ def cmd_add_channel(chat_id, user_id, users):
                     chat_id,
                     f"You're at the free limit of {MAX_CHANNELS_FREE} channel(s). "
                     f"To unlock up to {MAX_CHANNELS_PAID}, contact {SUPPORT_HANDLE}."
-                    + CREDITS_LINE,
+,
                 )
             else:
                 send_message(
                     chat_id,
                     f"You've reached the maximum of {MAX_CHANNELS_PAID} channels per account."
-                    + CREDITS_LINE,
+,
                 )
             return
 
@@ -491,7 +520,7 @@ def cmd_add_channel(chat_id, user_id, users):
         "⚠️ By connecting your channel you agree this bot may occasionally post "
         "sponsored content. Deleting a sponsored post within 4hrs = channel "
         "removed. 3 strikes = permanent ban."
-        + CREDITS_LINE,
+,
         reply_markup=cancel_only_keyboard(),
     )
 
@@ -543,7 +572,11 @@ def handle_onboarding_message(chat_id, user_id, users, message):
             "last_posted_at": None,
         })
         u["onboarding"]["step"] = None
-        send_message(chat_id, "Channel connected ✅. Now send 📰 Add Blog to set your website/feed.")
+        send_message(
+            chat_id,
+            "Channel connected ✅. Now tap 📰 Add Blog to set your website/feed.",
+            reply_markup=keyboard_for(user_id),
+        )
         return True
 
     if step == "awaiting_blog":
@@ -560,7 +593,7 @@ def handle_onboarding_message(chat_id, user_id, users, message):
                 chat_id,
                 "Couldn't find a working feed on that site. Double-check the "
                 "link, or if you already know your exact feed URL, paste that "
-                "instead." + CREDITS_LINE,
+                "instead.",
             )
             return True
 
@@ -581,7 +614,7 @@ def handle_onboarding_message(chat_id, user_id, users, message):
                 chat_id,
                 "Your format needs to include {link} somewhere so the post "
                 "actually leads to your content. Try again - you can also "
-                "use {title}." + CREDITS_LINE,
+                "use {title}.",
             )
             return True
         u["channels"][-1]["caption_template"] = text
@@ -651,7 +684,7 @@ def cmd_report_bug(chat_id, user_id, users):
         chat_id,
         "🐛 Describe the bug or issue you're facing - be as specific as possible "
         "(what you tapped, what you expected, what happened instead). "
-        "It goes straight to the Galaxy Gamez team." + CREDITS_LINE,
+        "It goes straight to the Galaxy Gamez team.",
         reply_markup=cancel_only_keyboard(),
     )
 
@@ -682,12 +715,12 @@ def handle_bug_report_message(chat_id, user_id, users, message):
 
 def cmd_my_gemz(chat_id, user_id, users):
     u = get_user(users, user_id)
-    send_message(chat_id, f"💎 Your balance: {u.get('gemz_balance', 0)} Gemz" + CREDITS_LINE)
+    send_message(chat_id, f"💎 Your balance: {u.get('gemz_balance', 0)} Gemz")
 
 
 def cmd_buy_gemz(chat_id, user_id, users):
     if not GEMZ_PACKAGES:
-        send_message(chat_id, "Plans aren't set up yet - check back soon." + CREDITS_LINE)
+        send_message(chat_id, "Plans aren't set up yet - check back soon.")
         return
 
     send_message(
@@ -695,7 +728,7 @@ def cmd_buy_gemz(chat_id, user_id, users):
         f"{box('GEMZ PLANS')}\n\n"
         f"Pick the plan that fits how you post. Not sure? Try 📈 Estimate "
         f"Usage first to see exactly how long each option realistically "
-        f"lasts for your setup." + CREDITS_LINE,
+        f"lasts for your setup.",
         reply_markup=gemz_plans_keyboard(),
     )
 
@@ -735,7 +768,7 @@ def handle_payment_proof_message(chat_id, user_id, users, message):
         f"👆 Payment screenshot from user {user_id}.{order_line}\n"
         f"Reply to them anytime with 💬 Message User - use 💳 Credit User once confirmed.",
     )
-    send_message(chat_id, "✅ Screenshot received - awaiting confirmation. You'll be notified once credited." + CREDITS_LINE, reply_markup=keyboard_for(user_id))
+    send_message(chat_id, "✅ Payment received and passed on to our team for verification. We'll credit your Gemz shortly and let you know as soon as it's done - thanks for your patience.", reply_markup=keyboard_for(user_id))
     return True
 
 
@@ -766,9 +799,22 @@ def handle_credit_message(chat_id, user_id, users, message):
     target = get_user(users, target_id)
     target["gemz_balance"] = target.get("gemz_balance", 0) + amount
     send_message(chat_id, f"✅ Credited {amount} Gemz to {target_id}. New balance: {target['gemz_balance']}", reply_markup=keyboard_for(user_id))
-    send_message(target_id, f"💎 {amount} Gemz added to your balance by the team." + CREDITS_LINE)
+    send_message(target_id, f"💎 {amount} Gemz added to your balance by the team.")
     apply_referral_purchase_bonus(users, target_id, amount)
     return True
+
+
+def cmd_reset_terms(chat_id, user_id, users, args_text):
+    if not is_admin(user_id):
+        send_message(chat_id, "Admin only.")
+        return
+    target_id = args_text.strip()
+    if not target_id.isdigit():
+        send_message(chat_id, "Usage: /resetterms <user_id>")
+        return
+    target = get_user(users, target_id)
+    target["terms_accepted"] = False
+    send_message(chat_id, f"✅ Terms reset for {target_id} - they'll see the ToS prompt again next message.")
 
 
 def cmd_unlock_slots(chat_id, user_id, users, args_text):
@@ -782,7 +828,7 @@ def cmd_unlock_slots(chat_id, user_id, users, args_text):
     target = get_user(users, target_id)
     target["extra_channel_slots"] = True
     send_message(chat_id, f"✅ {target_id} can now connect up to {MAX_CHANNELS_PAID} channels.")
-    send_message(target_id, f"🔓 Your account can now connect up to {MAX_CHANNELS_PAID} channels." + CREDITS_LINE)
+    send_message(target_id, f"🔓 Your account can now connect up to {MAX_CHANNELS_PAID} channels.")
 
 
 # ---------------- REDEEM CODES ----------------
@@ -857,16 +903,16 @@ def handle_redeem_message(chat_id, user_id, users, message):
     match = next((c for c in codes if c["code"] == entered and c["user_id"] == str(user_id)), None)
 
     if not match:
-        send_message(chat_id, "❌ Invalid code, or this code isn't assigned to you." + CREDITS_LINE, reply_markup=keyboard_for(user_id))
+        send_message(chat_id, "❌ Invalid code, or this code isn't assigned to you.", reply_markup=keyboard_for(user_id))
         return True
     if match["used"]:
-        send_message(chat_id, "❌ This code has already been used and can't be redeemed again." + CREDITS_LINE, reply_markup=keyboard_for(user_id))
+        send_message(chat_id, "❌ This code has already been used and can't be redeemed again.", reply_markup=keyboard_for(user_id))
         return True
 
     match["used"] = True
     save_redeem_codes(codes)
     u["gemz_balance"] = u.get("gemz_balance", 0) + match["amount"]
-    send_message(chat_id, f"✅ Redeemed! +{match['amount']} Gemz. New balance: {u['gemz_balance']}" + CREDITS_LINE, reply_markup=keyboard_for(user_id))
+    send_message(chat_id, f"✅ Redeemed! +{match['amount']} Gemz. New balance: {u['gemz_balance']}", reply_markup=keyboard_for(user_id))
     return True
 
 
@@ -893,7 +939,7 @@ def handle_budget_message(chat_id, user_id, users, message):
         send_message(
             chat_id,
             f"₦{naira:,} gets you {gemz:,} Gemz at the current rate. Run 📈 Estimate "
-            f"Usage first to see exactly how long that lasts for your setup." + CREDITS_LINE,
+            f"Usage first to see exactly how long that lasts for your setup.",
         )
         return True
 
@@ -905,7 +951,7 @@ def handle_budget_message(chat_id, user_id, users, message):
         f"{box('BUDGET RESULT')}\n\n"
         f"₦{naira:,} = {gemz:,} Gemz\n"
         f"For {est['channels']} channel(s), {est['posts_per_cycle']} post(s) every {interval_label}:\n\n"
-        f"➜ Lasts: {format_duration(d)}" + CREDITS_LINE,
+        f"➜ Lasts: {format_duration(d)}",
         reply_markup=keyboard_for(user_id),
     )
     return True
@@ -935,7 +981,7 @@ def complete_referral_if_eligible(users, new_user_id):
     send_message(
         referrer_id,
         f"🎉 Your referral connected their first channel! You'll now earn "
-        f"5% of every Gemz purchase they ever make, for life." + CREDITS_LINE,
+        f"5% of every Gemz purchase they ever make, for life.",
     )
     send_message(
         new_user_id,
@@ -966,7 +1012,7 @@ def apply_referral_purchase_bonus(users, buyer_user_id, gemz_purchased):
     send_message(
         referrer_id,
         f"💎 Your referral just bought Gemz - you earned {bonus} Gemz "
-        f"(5% referral bonus)." + CREDITS_LINE,
+        f"(5% referral bonus).",
     )
 
 
@@ -981,9 +1027,26 @@ def cmd_my_referral(chat_id, user_id, users):
         chat_id,
         f"{box('MY REFERRAL LINK')}\n\n"
         f"{link}\n\n"
-        f"Share this - when someone joins, passes the join-check, and "
-        f"connects their first channel, you BOTH get {REFERRAL_REWARD_GEMZ} Gemz.\n\n"
-        f"Completed referrals so far: {referred_count}" + CREDITS_LINE,
+        f"How it works: once someone joins through your link, joins the "
+        f"required channels, and connects their first channel, they get a "
+        f"24-hour free trial followed by 500 free Gemz to get started - and "
+        f"you earn 5% of every Gemz purchase they ever make, for as long as "
+        f"they're active. No limit on how many people you refer.\n\n"
+        f"Completed referrals so far: {referred_count}",
+    )
+    send_message(
+        chat_id,
+        f"Want an easy message to send them? Copy the text below and share "
+        f"it directly:\n\n"
+        f"---\n"
+        f"🎮 I've been using this bot to auto-post to my Telegram channel "
+        f"straight from my website - no manual posting needed. It works "
+        f"with WordPress, Blogger, Medium, Ghost, or basically any site "
+        f"with an RSS feed.\n\n"
+        f"You get a free 24-hour trial + 500 free Gemz just for trying it "
+        f"out. Thought you'd like it too:\n"
+        f"{link}\n"
+        f"---",
     )
 
 
@@ -1024,7 +1087,7 @@ def handle_msguser_text_message(chat_id, user_id, users, message):
     if not text:
         send_message(chat_id, "Send text only for now.", reply_markup=cancel_only_keyboard())
         return True
-    send_message(target_id, f"💬 Message from the Galaxy Gamez team:\n\n{text}" + CREDITS_LINE)
+    send_message(target_id, f"💬 Message from the Galaxy Gamez team:\n\n{text}")
     send_message(chat_id, f"✅ Sent to {target_id}. Send another, or tap ❌ Cancel when done.", reply_markup=cancel_only_keyboard())
     return True
 
@@ -1058,7 +1121,7 @@ def check_referral_trials(users):
             uid,
             "🎁 Your 24-hour trial has ended - 500 free Gemz added to your "
             "balance to keep you going. Top up anytime with 💰 Buy Gemz."
-            + CREDITS_LINE,
+,
         )
     return any_changed
 
@@ -1172,6 +1235,10 @@ def handle_message(message, users):
 
     if text.startswith("/unlockchannels"):
         cmd_unlock_slots(chat_id, user_id, users, text[len("/unlockchannels"):])
+        return
+
+    if text.startswith("/resetterms"):
+        cmd_reset_terms(chat_id, user_id, users, text[len("/resetterms"):])
         return
 
     if text == "⚙️ Advanced" and is_admin(user_id):
@@ -1319,7 +1386,7 @@ def handle_callback(callback, users):
         interval_label = f"{interval_hours}hr" if interval_hours < 24 else f"{interval_hours // 24} day(s)"
         send_message(
             chat_id,
-            f"All set ✅ Your channel will post {n} game(s) every {interval_label}." + CREDITS_LINE,
+            f"All set ✅ Your channel will post {n} game(s) every {interval_label}.",
             reply_markup=keyboard_for(user_id),
         )
         complete_referral_if_eligible(users, user_id)
@@ -1393,7 +1460,7 @@ def handle_callback(callback, users):
 
         send_message(
             chat_id,
-            "\n".join(lines) + CREDITS_LINE,
+            "\n".join(lines),
             reply_markup={"inline_keyboard": [[{"text": "💰 I Have A Budget (₦)", "callback_data": "enter_budget"}]]},
         )
         return
@@ -1436,7 +1503,7 @@ def handle_callback(callback, users):
             f"`{order_code}`\n\n"
             f"Once paid, send the payment screenshot here as a photo - it "
             f"goes straight to the team. You'll be credited once confirmed."
-            + CREDITS_LINE,
+,
             reply_markup=cancel_only_keyboard(),
             parse_mode="Markdown",
         )
