@@ -197,7 +197,7 @@
         "paused": false,
         "posted": [],
         "interval_hours": 1,
-        "posts_per_cycle": 3,
+        "posts_per_cycle": 5,
         "caption_template": null,
         "last_posted_at": null
       }
