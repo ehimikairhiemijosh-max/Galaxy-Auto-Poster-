@@ -196,7 +196,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 468,
+    "gemz_balance": 458,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -225,12 +225,17 @@
           "https://galaxygamings.blogspot.com/2024/05/gta-chinatown-wars-v44180.html",
           "https://galaxygamings.blogspot.com/2024/05/ghost-rider-psp.html",
           "https://galaxygamings.blogspot.com/2024/05/x-men-legends-rise-of-apocalypse-psp.html",
-          "https://galaxygamings.blogspot.com/2024/06/gta-liberty-city-stories.html"
+          "https://galaxygamings.blogspot.com/2024/06/gta-liberty-city-stories.html",
+          "https://galaxygamings.blogspot.com/2024/06/gta-san-andreas.html",
+          "https://galaxygamings.blogspot.com/2024/06/grand-theft-auto-vice-city.html",
+          "https://galaxygamings.blogspot.com/2024/06/undead-knights-psp-game.html",
+          "https://galaxygamings.blogspot.com/2024/06/wwe-2k24-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/06/the-godfather-psp-iso.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-10T10:20:14.551203"
+        "last_posted_at": "2026-08-10T11:50:17.125629"
       },
       {
         "channel_id": -1004427720231,
@@ -252,12 +257,17 @@
           "https://galaxygamings.blogspot.com/2024/05/gta-chinatown-wars-v44180.html",
           "https://galaxygamings.blogspot.com/2024/05/ghost-rider-psp.html",
           "https://galaxygamings.blogspot.com/2024/05/x-men-legends-rise-of-apocalypse-psp.html",
-          "https://galaxygamings.blogspot.com/2024/06/gta-liberty-city-stories.html"
+          "https://galaxygamings.blogspot.com/2024/06/gta-liberty-city-stories.html",
+          "https://galaxygamings.blogspot.com/2024/06/gta-san-andreas.html",
+          "https://galaxygamings.blogspot.com/2024/06/grand-theft-auto-vice-city.html",
+          "https://galaxygamings.blogspot.com/2024/06/undead-knights-psp-game.html",
+          "https://galaxygamings.blogspot.com/2024/06/wwe-2k24-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/06/the-godfather-psp-iso.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-10T10:20:27.610111"
+        "last_posted_at": "2026-08-10T11:50:29.727087"
       }
     ],
     "last_upkeep_date": "2026-08-10"
