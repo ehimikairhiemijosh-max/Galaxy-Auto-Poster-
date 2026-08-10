@@ -2,6 +2,7 @@
 Galaxy Gamez - Post caption format
 """
 
+from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
 
 from config import WHATSAPP_LINKS, TELEGRAM_LINK, WEBSITE_LINK
@@ -11,7 +12,22 @@ def extract_image(entry):
     html = entry.get("summary", "")
     soup = BeautifulSoup(html, "html.parser")
     img = soup.find("img")
-    return img["src"] if img and img.get("src") else None
+    if not img or not img.get("src"):
+        return None
+
+    src = img["src"].strip()
+    base = entry.get("link", "")
+
+    # Resolve protocol-relative ("//host/img.jpg") and root-relative
+    # ("/uploads/img.jpg") URLs against the post's own link - some sites
+    # (especially WordPress) emit these instead of full URLs, which
+    # Telegram's sendPhoto rejects outright ("URL host is empty").
+    resolved = urljoin(base, src)
+
+    parsed = urlparse(resolved)
+    if parsed.scheme in ("http", "https") and parsed.netloc:
+        return resolved
+    return None  # not a valid absolute URL - caller falls back to text-only post
 
 
 def build_caption(entry):
