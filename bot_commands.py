@@ -4,14 +4,14 @@ Runs every ~5 minutes via GitHub Actions (not an always-on bot).
 """
 
 import requests
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 from config import (
     BOT_TOKEN, ADMIN_CHAT_ID, GITHUB_TOKEN, GITHUB_REPOSITORY,
     FORCE_JOIN_CHATS, SUPPORT_HANDLE, STRIKE_LIMIT, BROADCAST_GRACE_HOURS,
     API_BASE, MAX_CHANNELS_FREE, MAX_CHANNELS_PAID, PAYMENT_INFO,
     MIN_MONTHLY_PRICE_NAIRA, MIN_YEARLY_PRICE_NAIRA, GEMZ_PACKAGES, NAIRA_PER_GEMZ,
-    REFERRAL_REWARD_GEMZ, BOT_USERNAME,
+    REFERRAL_REWARD_GEMZ, BOT_USERNAME, GEMZ_COST_PER_CHANNEL_PER_DAY,
 )
 from storage import (
     load_state, save_state, load_stats, load_users, save_users,
@@ -372,7 +372,18 @@ def cmd_pause(chat_id, user_id, users):
     state = load_state()
     state["paused"] = True
     save_state(state)
-    send_message(chat_id, "Global automatic posting paused for ALL users.")
+    notified = 0
+    for uid, u in users.items():
+        if uid == "__admin__" or not u.get("channels"):
+            continue
+        send_message(
+            uid,
+            "⏸️ Auto-posting has been temporarily paused platform-wide by "
+            "the team. Your setup is untouched and will resume automatically "
+            "- no action needed from you.",
+        )
+        notified += 1
+    send_message(chat_id, f"Global automatic posting paused for all users (your own channels keep running). Notified {notified} user(s).")
 
 
 def cmd_resume(chat_id, user_id, users):
@@ -382,7 +393,13 @@ def cmd_resume(chat_id, user_id, users):
     state = load_state()
     state["paused"] = False
     save_state(state)
-    send_message(chat_id, "Global automatic posting resumed.")
+    notified = 0
+    for uid, u in users.items():
+        if uid == "__admin__" or not u.get("channels"):
+            continue
+        send_message(uid, "▶️ Auto-posting is back up platform-wide. Your channels will resume on their normal schedule.")
+        notified += 1
+    send_message(chat_id, f"Global automatic posting resumed. Notified {notified} user(s).")
 
 
 def cmd_my_pause(chat_id, user_id, users):
@@ -1096,6 +1113,50 @@ def cmd_estimate_start(chat_id, user_id, users):
     u = get_user(users, user_id)
     u["onboarding"]["estimate"] = {}
     send_message(chat_id, "📈 How many channels are you running?", reply_markup=estimate_channels_keyboard())
+
+
+def apply_daily_upkeep(users):
+    """Charges GEMZ_COST_PER_CHANNEL_PER_DAY per active channel, once per
+    calendar day per user. Admin and users in an active free trial are
+    exempt. Auto-pauses channels if the balance can't cover the charge.
+    Returns True if anything changed, for the caller's save decision."""
+    from main import _is_in_free_trial
+    today = date.today().isoformat()
+    any_changed = False
+
+    for uid, u in users.items():
+        if uid == "__admin__" or not u.get("channels"):
+            continue
+        if u.get("last_upkeep_date") == today:
+            continue  # already charged today
+        if _is_in_free_trial(u):
+            u["last_upkeep_date"] = today
+            any_changed = True
+            continue
+
+        active_channels = [c for c in u["channels"] if not c.get("paused")]
+        if not active_channels:
+            u["last_upkeep_date"] = today
+            continue
+
+        charge = len(active_channels) * GEMZ_COST_PER_CHANNEL_PER_DAY
+        u["last_upkeep_date"] = today
+        any_changed = True
+
+        if u.get("gemz_balance", 0) >= charge:
+            u["gemz_balance"] -= charge
+        else:
+            # Can't cover it - pause everything and let them know
+            for c in active_channels:
+                c["paused"] = True
+            send_message(
+                uid,
+                f"⏸️ Your channel(s) have been paused - your Gemz balance "
+                f"couldn't cover today's upkeep. Top up with 💰 Buy Gemz to "
+                f"resume.",
+            )
+
+    return any_changed
 
 
 def check_referral_trials(users):

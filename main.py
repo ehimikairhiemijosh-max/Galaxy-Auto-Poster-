@@ -20,6 +20,7 @@ import feedparser
 from config import (
     DEFAULT_CHANNEL_IDS, DEFAULT_BLOG_FEED_URL, DEFAULT_INTERVAL_HOURS,
     DEFAULT_POSTS_PER_CYCLE, DELAY_BETWEEN_CHANNELS, DEFAULT_GENERIC_TEMPLATE,
+    GEMZ_COST_PER_POST,
 )
 from storage import (
     load_state, load_stats, save_stats, load_users, save_users,
@@ -139,6 +140,16 @@ def _legacy_posted_links():
         return []
 
 
+def _is_in_free_trial(u):
+    """True if this user is currently inside their 24hr referral trial
+    window (no Gemz deduction during this period)."""
+    started = u.get("trial_started_at")
+    if not started or u.get("trial_bonus_given"):
+        return False
+    elapsed = datetime.utcnow() - datetime.fromisoformat(started)
+    return elapsed < timedelta(hours=24)
+
+
 def ensure_default_admin(users):
     """Make sure Josh's own 6 channels exist in the new multi-user system.
     Also self-heals if the __admin__ record exists but somehow ended up
@@ -186,8 +197,6 @@ def run_posting_cycle(manual=False, only_user_id=None, users=None):
     standalone = users is None
 
     state = load_state()
-    if state.get("paused") and not manual:
-        return "Skipped - global posting is paused."
 
     if standalone:
         users = load_users()
@@ -201,6 +210,11 @@ def run_posting_cycle(manual=False, only_user_id=None, users=None):
         if only_user_id is not None and user_id != only_user_id:
             continue
         if u.get("banned") and user_id != "__admin__":
+            continue
+        # Global pause only affects non-admin users - admin's own posting
+        # keeps running even while everyone else is paused. Manual "Post
+        # Now" always bypasses this regardless of who's calling it.
+        if state.get("paused") and not manual and user_id != "__admin__":
             continue
         for ch in u.get("channels", []):
             if ch.get("paused"):
@@ -225,6 +239,21 @@ def run_posting_cycle(manual=False, only_user_id=None, users=None):
             was_first_post_ever = len(posted_links) == 0
             posted_any = False
             posts_per_cycle = ch.get("posts_per_cycle", DEFAULT_POSTS_PER_CYCLE)
+
+            in_free_trial = _is_in_free_trial(u)
+            if user_id != "__admin__" and not in_free_trial and u.get("gemz_balance", 0) < GEMZ_COST_PER_POST:
+                if not ch.get("paused"):
+                    ch["paused"] = True
+                    try:
+                        send_message(
+                            user_id,
+                            f"⏸️ Your channel has been paused - your Gemz balance ran out. "
+                            f"Top up with 💰 Buy Gemz to resume auto-posting." + "",
+                        )
+                    except Exception:
+                        pass
+                results.append(f"{ch['channel_id']}: paused - insufficient Gemz balance")
+                continue
 
             for _ in range(posts_per_cycle):
                 entry = next_unposted(entries, posted_links)
@@ -253,6 +282,21 @@ def run_posting_cycle(manual=False, only_user_id=None, users=None):
                     posted_links.append(entry.link)  # ONLY mark posted for THIS channel
                     results.append(f"{ch['channel_id']}: OK - {entry.title}")
                     posted_any = True
+
+                    if user_id != "__admin__" and not in_free_trial:
+                        u["gemz_balance"] = u.get("gemz_balance", 0) - GEMZ_COST_PER_POST
+                        if u["gemz_balance"] < GEMZ_COST_PER_POST:
+                            # Ran out mid-cycle - stop posting further entries this run
+                            ch["paused"] = True
+                            try:
+                                send_message(
+                                    user_id,
+                                    f"⏸️ Your channel has been paused - your Gemz balance ran out. "
+                                    f"Top up with 💰 Buy Gemz to resume auto-posting.",
+                                )
+                            except Exception:
+                                pass
+                            break
                 else:
                     stats["failed"] = stats.get("failed", 0) + 1
                     results.append(f"{ch['channel_id']}: FAILED - {message}")
