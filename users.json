@@ -181,7 +181,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 500,
+    "gemz_balance": 498,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -201,6 +201,7 @@
         "caption_template": "Game Name: {title}\n\nDownload link: {link}",
         "last_posted_at": null
       }
-    ]
+    ],
+    "last_upkeep_date": "2026-08-10"
   }
 }
