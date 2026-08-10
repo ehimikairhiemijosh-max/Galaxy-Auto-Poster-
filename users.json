@@ -211,7 +211,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 438,
+    "gemz_balance": 428,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -255,12 +255,17 @@
           "https://galaxygamings.blogspot.com/2024/06/tekken-6-psp.html",
           "https://galaxygamings.blogspot.com/2024/06/metal-gear-solid-peace-walker-psp.html",
           "https://galaxygamings.blogspot.com/2024/06/ben-10-protector-of-earth-psp-iso.html",
-          "https://galaxygamings.blogspot.com/2024/06/dragon-ball-z-shin-budokai-2-psp-iso.html"
+          "https://galaxygamings.blogspot.com/2024/06/dragon-ball-z-shin-budokai-2-psp-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/dante-inferno-psp-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/efootball-pes-2025-ppsspp-update.html",
+          "https://galaxygamings.blogspot.com/2024/06/peter-jackson-king-kong-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/call-of-duty-roads-to-victory-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/06/james-camerons-avatarpsp.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-10T15:02:26.346774"
+        "last_posted_at": "2026-08-10T16:56:31.415287"
       },
       {
         "channel_id": -1004427720231,
@@ -297,12 +302,17 @@
           "https://galaxygamings.blogspot.com/2024/06/tekken-6-psp.html",
           "https://galaxygamings.blogspot.com/2024/06/metal-gear-solid-peace-walker-psp.html",
           "https://galaxygamings.blogspot.com/2024/06/ben-10-protector-of-earth-psp-iso.html",
-          "https://galaxygamings.blogspot.com/2024/06/dragon-ball-z-shin-budokai-2-psp-iso.html"
+          "https://galaxygamings.blogspot.com/2024/06/dragon-ball-z-shin-budokai-2-psp-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/dante-inferno-psp-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/efootball-pes-2025-ppsspp-update.html",
+          "https://galaxygamings.blogspot.com/2024/06/peter-jackson-king-kong-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/call-of-duty-roads-to-victory-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/06/james-camerons-avatarpsp.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-10T15:02:38.308955"
+        "last_posted_at": "2026-08-10T16:56:43.579156"
       }
     ],
     "last_upkeep_date": "2026-08-10"
