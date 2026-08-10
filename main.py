@@ -214,7 +214,9 @@ def run_posting_cycle(manual=False, only_user_id=None, users=None):
         # Global pause only affects non-admin users - admin's own posting
         # keeps running even while everyone else is paused. Manual "Post
         # Now" always bypasses this regardless of who's calling it.
-        if state.get("paused") and not manual and user_id != "__admin__":
+        # Global pause blocks ALL posting (scheduled AND manual Post Now)
+        # for everyone except admin, who is always exempt regardless.
+        if state.get("paused") and user_id != "__admin__":
             continue
         for ch in u.get("channels", []):
             if ch.get("paused"):

@@ -216,6 +216,12 @@ def cmd_post(chat_id, user_id, users):
     target_id = "__admin__" if is_admin(user_id) else str(user_id)
     u = get_user(users, target_id)
 
+    if not is_admin(user_id):
+        state = load_state()
+        if state.get("paused"):
+            send_message(chat_id, "⏸️ Posting is currently paused platform-wide by the team - Post Now is unavailable until it resumes. You'll be notified automatically when it's back.")
+            return
+
     last_run = u.get("last_post_now_at")
     if last_run:
         elapsed = (datetime.utcnow() - datetime.fromisoformat(last_run)).total_seconds()
