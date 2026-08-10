@@ -12,6 +12,7 @@ from config import (
     API_BASE, MAX_CHANNELS_FREE, MAX_CHANNELS_PAID, PAYMENT_INFO,
     MIN_MONTHLY_PRICE_NAIRA, MIN_YEARLY_PRICE_NAIRA, GEMZ_PACKAGES, NAIRA_PER_GEMZ,
     REFERRAL_REWARD_GEMZ, BOT_USERNAME, GEMZ_COST_PER_CHANNEL_PER_DAY,
+    POST_NOW_COOLDOWN_SECONDS,
 )
 from storage import (
     load_state, save_state, load_stats, load_users, save_users,
@@ -213,6 +214,17 @@ def is_admin(user_id):
 def cmd_post(chat_id, user_id, users):
     from main import run_posting_cycle
     target_id = "__admin__" if is_admin(user_id) else str(user_id)
+    u = get_user(users, target_id)
+
+    last_run = u.get("last_post_now_at")
+    if last_run:
+        elapsed = (datetime.utcnow() - datetime.fromisoformat(last_run)).total_seconds()
+        if elapsed < POST_NOW_COOLDOWN_SECONDS:
+            wait = int(POST_NOW_COOLDOWN_SECONDS - elapsed)
+            send_message(chat_id, f"⏳ Still working through your last Post Now - try again in {wait}s. (This limit stops rapid taps from tying up the whole bot for everyone.)")
+            return
+
+    u["last_post_now_at"] = now_iso()
     send_message(chat_id, "Starting a posting cycle now (your channels only)...")
     results = run_posting_cycle(manual=True, only_user_id=target_id, users=users)
     send_message(chat_id, _format_post_results(results, users, target_id))

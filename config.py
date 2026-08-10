@@ -53,6 +53,8 @@ DEFAULT_INTERVAL_HOURS = 3  # Josh's own channels
 POSTS_PER_CYCLE_OPTIONS = [1, 2, 3, 5]
 DEFAULT_POSTS_PER_CYCLE = 3  # Josh's own channels
 
+POST_NOW_COOLDOWN_SECONDS = 60  # prevents rapid-tap spam from blocking the whole bot
+
 # ---------------- GEMZ COST FORMULA (used once Step 2 currency is built) ----------------
 GEMZ_COST_PER_POST = 1          # deducted every time a post actually sends
 GEMZ_COST_PER_CHANNEL_PER_DAY = 2  # flat daily upkeep per active connected channel

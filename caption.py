@@ -2,13 +2,63 @@
 Galaxy Gamez - Post caption format
 """
 
+import re
 from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
 
 from config import WHATSAPP_LINKS, TELEGRAM_LINK, WEBSITE_LINK
 
+_WP_THUMB_SUFFIX = re.compile(r"-\d+x\d+(\.\w+)$")
+
+
+def _try_wordpress_original(url):
+    """WordPress auto-generates thumbnail sizes like image-150x150.jpg -
+    the original full-size file often still exists at the same path with
+    that size suffix stripped off. Verifies the guess actually resolves
+    before trusting it, so a wrong guess can never break a working post -
+    falls back to the original thumbnail URL if the check fails."""
+    guess = _WP_THUMB_SUFFIX.sub(r"\1", url)
+    if guess == url:
+        return url  # no thumbnail suffix pattern found, nothing to try
+    try:
+        import requests
+        resp = requests.head(guess, timeout=8, allow_redirects=True)
+        if resp.status_code == 200:
+            return guess
+    except Exception:
+        pass
+    return url  # guess didn't check out - stick with the known-good thumbnail
+
 
 def extract_image(entry):
+    # 1. media:content / media:thumbnail - most blog/WordPress feeds expose
+    #    the full-size featured image here, separate from any small inline
+    #    thumbnail embedded in the HTML summary.
+    for key in ("media_content", "media_thumbnail"):
+        media = entry.get(key)
+        if media:
+            candidates = [m.get("url") for m in media if m.get("url")]
+            if candidates:
+                # Prefer the largest by declared width if available
+                candidates.sort(key=lambda u: next(
+                    (int(m.get("width", 0)) for m in media if m.get("url") == u), 0
+                ), reverse=True)
+                resolved = urljoin(entry.get("link", ""), candidates[0])
+                parsed = urlparse(resolved)
+                if parsed.scheme in ("http", "https") and parsed.netloc:
+                    return resolved
+
+    # 2. Enclosures (RSS <enclosure> tag) - another common place for the
+    #    full-size original image
+    for link in entry.get("links", []):
+        if link.get("rel") == "enclosure" and str(link.get("type", "")).startswith("image/"):
+            resolved = urljoin(entry.get("link", ""), link.get("href", ""))
+            parsed = urlparse(resolved)
+            if parsed.scheme in ("http", "https") and parsed.netloc:
+                return resolved
+
+    # 3. Fall back to the first <img> in the HTML summary - often just a
+    #    small thumbnail, but better than nothing.
     html = entry.get("summary", "")
     soup = BeautifulSoup(html, "html.parser")
     img = soup.find("img")
@@ -17,16 +67,10 @@ def extract_image(entry):
 
     src = img["src"].strip()
     base = entry.get("link", "")
-
-    # Resolve protocol-relative ("//host/img.jpg") and root-relative
-    # ("/uploads/img.jpg") URLs against the post's own link - some sites
-    # (especially WordPress) emit these instead of full URLs, which
-    # Telegram's sendPhoto rejects outright ("URL host is empty").
     resolved = urljoin(base, src)
-
     parsed = urlparse(resolved)
     if parsed.scheme in ("http", "https") and parsed.netloc:
-        return resolved
+        return _try_wordpress_original(resolved)
     return None  # not a valid absolute URL - caller falls back to text-only post
 
 
