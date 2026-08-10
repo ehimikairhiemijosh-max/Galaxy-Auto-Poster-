@@ -181,7 +181,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 498,
+    "gemz_balance": 488,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -195,22 +195,34 @@
         "title": "Connected channel",
         "blog_feed_url": "https://galaxygamings.blogspot.com/feeds/posts/default",
         "paused": false,
-        "posted": [],
+        "posted": [
+          "https://galaxygamings.blogspot.com/2024/05/downhill-domination-ps2-iso-for-android.html",
+          "https://galaxygamings.blogspot.com/2024/05/the-dark-knight-rises-mobile.html",
+          "https://galaxygamings.blogspot.com/2024/05/efootball-pes-2024-ppsspp-psp-players.html",
+          "https://galaxygamings.blogspot.com/2024/05/brother-in-arms-3-apk-mod.html",
+          "https://galaxygamings.blogspot.com/2024/05/download-pes-2024-efootball-for-ppsspp.html"
+        ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": null
+        "last_posted_at": "2026-08-10T09:10:59.666195"
       },
       {
         "channel_id": -1004427720231,
         "title": "Connected channel",
         "blog_feed_url": "https://galaxygamings.blogspot.com/feeds/posts/default",
         "paused": false,
-        "posted": [],
+        "posted": [
+          "https://galaxygamings.blogspot.com/2024/05/downhill-domination-ps2-iso-for-android.html",
+          "https://galaxygamings.blogspot.com/2024/05/the-dark-knight-rises-mobile.html",
+          "https://galaxygamings.blogspot.com/2024/05/efootball-pes-2024-ppsspp-psp-players.html",
+          "https://galaxygamings.blogspot.com/2024/05/brother-in-arms-3-apk-mod.html",
+          "https://galaxygamings.blogspot.com/2024/05/download-pes-2024-efootball-for-ppsspp.html"
+        ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": null
+        "last_posted_at": "2026-08-10T09:11:12.923548"
       }
     ],
     "last_upkeep_date": "2026-08-10"
