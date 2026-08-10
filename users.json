@@ -226,7 +226,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 418,
+    "gemz_balance": 408,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -280,12 +280,17 @@
           "https://galaxygamings.blogspot.com/2024/06/assassin-creed-bloodlines.html",
           "https://galaxygamings.blogspot.com/2024/06/fifa-street-2024-ppsspp.html",
           "https://galaxygamings.blogspot.com/2024/06/g-force-psp.html",
-          "https://galaxygamings.blogspot.com/2024/06/gta-5-apk-obbfor-mobile.html"
+          "https://galaxygamings.blogspot.com/2024/06/gta-5-apk-obbfor-mobile.html",
+          "https://galaxygamings.blogspot.com/2024/06/ea-sports-fc-mobile-24-apk-obb.html",
+          "https://galaxygamings.blogspot.com/2024/06/dragon-ball-z-shin-budokai-psp-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/nfs-most-wanted.html",
+          "https://galaxygamings.blogspot.com/2024/06/soul-calibur-broken-destiny.html",
+          "https://galaxygamings.blogspot.com/2024/06/prince-of-persia-forgotten-sands.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-10T19:02:10.887961"
+        "last_posted_at": "2026-08-10T20:46:03.132821"
       },
       {
         "channel_id": -1004427720231,
@@ -332,12 +337,17 @@
           "https://galaxygamings.blogspot.com/2024/06/assassin-creed-bloodlines.html",
           "https://galaxygamings.blogspot.com/2024/06/fifa-street-2024-ppsspp.html",
           "https://galaxygamings.blogspot.com/2024/06/g-force-psp.html",
-          "https://galaxygamings.blogspot.com/2024/06/gta-5-apk-obbfor-mobile.html"
+          "https://galaxygamings.blogspot.com/2024/06/gta-5-apk-obbfor-mobile.html",
+          "https://galaxygamings.blogspot.com/2024/06/ea-sports-fc-mobile-24-apk-obb.html",
+          "https://galaxygamings.blogspot.com/2024/06/dragon-ball-z-shin-budokai-psp-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/nfs-most-wanted.html",
+          "https://galaxygamings.blogspot.com/2024/06/soul-calibur-broken-destiny.html",
+          "https://galaxygamings.blogspot.com/2024/06/prince-of-persia-forgotten-sands.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-10T19:02:23.669068"
+        "last_posted_at": "2026-08-10T20:46:15.081012"
       }
     ],
     "last_upkeep_date": "2026-08-10"
