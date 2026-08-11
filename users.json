@@ -301,7 +301,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 328,
+    "gemz_balance": 318,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -400,12 +400,17 @@
           "https://galaxygamings.blogspot.com/2024/08/efootball-pes-2025-ppsspp-with-new.html",
           "https://galaxygamings.blogspot.com/2024/08/gta-san-andreas-apk-mod-pack-gta-v.html",
           "https://galaxygamings.blogspot.com/2024/08/550mb-dream-league-soccer-2025.html",
-          "https://galaxygamings.blogspot.com/2024/08/600mb-tekken-5-dark-resurrection-ppsspp.html"
+          "https://galaxygamings.blogspot.com/2024/08/600mb-tekken-5-dark-resurrection-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/08/syphon-filter-dark-mirror-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/08/11gb-efootball-pes-2025-season-update.html",
+          "https://galaxygamings.blogspot.com/2024/08/fifa-fc-2025-ppsspp-new-transfers-ps-5.html",
+          "https://galaxygamings.blogspot.com/2024/08/homebrew-games-for-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/08/320mbprince-of-persia-forgotten-sands.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-11T13:13:51.764710"
+        "last_posted_at": "2026-08-11T15:00:57.493481"
       },
       {
         "channel_id": -1004427720231,
@@ -497,12 +502,17 @@
           "https://galaxygamings.blogspot.com/2024/08/efootball-pes-2025-ppsspp-with-new.html",
           "https://galaxygamings.blogspot.com/2024/08/gta-san-andreas-apk-mod-pack-gta-v.html",
           "https://galaxygamings.blogspot.com/2024/08/550mb-dream-league-soccer-2025.html",
-          "https://galaxygamings.blogspot.com/2024/08/600mb-tekken-5-dark-resurrection-ppsspp.html"
+          "https://galaxygamings.blogspot.com/2024/08/600mb-tekken-5-dark-resurrection-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/08/syphon-filter-dark-mirror-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/08/11gb-efootball-pes-2025-season-update.html",
+          "https://galaxygamings.blogspot.com/2024/08/fifa-fc-2025-ppsspp-new-transfers-ps-5.html",
+          "https://galaxygamings.blogspot.com/2024/08/homebrew-games-for-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/08/320mbprince-of-persia-forgotten-sands.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-11T13:14:04.190095"
+        "last_posted_at": "2026-08-11T15:01:09.661568"
       }
     ],
     "last_upkeep_date": "2026-08-10"
