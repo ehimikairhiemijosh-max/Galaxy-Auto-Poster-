@@ -316,7 +316,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 308,
+    "gemz_balance": 298,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -425,12 +425,17 @@
           "https://galaxygamings.blogspot.com/2024/08/230mb-spider-man-web-of-shadows-highly.html",
           "https://galaxygamings.blogspot.com/2024/08/300mb-first-touch-soccer-2024-fts24-apk.html",
           "https://galaxygamings.blogspot.com/2024/08/600mb-oddworld-stranger-wrath-apk-mod.html",
-          "https://galaxygamings.blogspot.com/2024/08/obscure-aftermath-ppsspp-highly.html"
+          "https://galaxygamings.blogspot.com/2024/08/obscure-aftermath-ppsspp-highly.html",
+          "https://galaxygamings.blogspot.com/2024/08/150mb-wipeout-pure-ppsspp-highly.html",
+          "https://galaxygamings.blogspot.com/2024/08/300mb-gi-joe-rise-of-cobra-highly.html",
+          "https://galaxygamings.blogspot.com/2024/08/99mb-ratatouille-ppsspp-highly.html",
+          "https://galaxygamings.blogspot.com/2024/09/top-20-psp-games-download-highly.html",
+          "https://galaxygamings.blogspot.com/2024/09/updated-efootball-pes-2025-ppsspp.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-11T17:00:28.566705"
+        "last_posted_at": "2026-08-11T18:02:17.651473"
       },
       {
         "channel_id": -1004427720231,
@@ -532,12 +537,17 @@
           "https://galaxygamings.blogspot.com/2024/08/230mb-spider-man-web-of-shadows-highly.html",
           "https://galaxygamings.blogspot.com/2024/08/300mb-first-touch-soccer-2024-fts24-apk.html",
           "https://galaxygamings.blogspot.com/2024/08/600mb-oddworld-stranger-wrath-apk-mod.html",
-          "https://galaxygamings.blogspot.com/2024/08/obscure-aftermath-ppsspp-highly.html"
+          "https://galaxygamings.blogspot.com/2024/08/obscure-aftermath-ppsspp-highly.html",
+          "https://galaxygamings.blogspot.com/2024/08/150mb-wipeout-pure-ppsspp-highly.html",
+          "https://galaxygamings.blogspot.com/2024/08/300mb-gi-joe-rise-of-cobra-highly.html",
+          "https://galaxygamings.blogspot.com/2024/08/99mb-ratatouille-ppsspp-highly.html",
+          "https://galaxygamings.blogspot.com/2024/09/top-20-psp-games-download-highly.html",
+          "https://galaxygamings.blogspot.com/2024/09/updated-efootball-pes-2025-ppsspp.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-11T17:00:41.374986"
+        "last_posted_at": "2026-08-11T18:02:29.698473"
       }
     ],
     "last_upkeep_date": "2026-08-10"
