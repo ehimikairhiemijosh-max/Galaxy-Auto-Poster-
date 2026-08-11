@@ -271,7 +271,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 368,
+    "gemz_balance": 358,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -350,12 +350,17 @@
           "https://galaxygamings.blogspot.com/2024/07/hell-boy-psp-game-iso-download.html",
           "https://galaxygamings.blogspot.com/2024/07/wr3d-2k24-mod.html",
           "https://galaxygamings.blogspot.com/2024/07/bleach-heat-soul-7-psp.html",
-          "https://galaxygamings.blogspot.com/2024/07/toy-story-3-psp.html"
+          "https://galaxygamings.blogspot.com/2024/07/toy-story-3-psp.html",
+          "https://galaxygamings.blogspot.com/2024/07/ratatouille-psp.html",
+          "https://galaxygamings.blogspot.com/2024/07/prince-of-persia-revelation-psp.html",
+          "https://galaxygamings.blogspot.com/2024/07/dead-to-rights-psp.html",
+          "https://galaxygamings.blogspot.com/2024/07/modern-combat-3-mod-114g-apk-obb.html",
+          "https://galaxygamings.blogspot.com/2024/07/gta-3-apk-obb.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-11T05:13:29.572029"
+        "last_posted_at": "2026-08-11T07:13:00.160386"
       },
       {
         "channel_id": -1004427720231,
@@ -427,12 +432,17 @@
           "https://galaxygamings.blogspot.com/2024/07/hell-boy-psp-game-iso-download.html",
           "https://galaxygamings.blogspot.com/2024/07/wr3d-2k24-mod.html",
           "https://galaxygamings.blogspot.com/2024/07/bleach-heat-soul-7-psp.html",
-          "https://galaxygamings.blogspot.com/2024/07/toy-story-3-psp.html"
+          "https://galaxygamings.blogspot.com/2024/07/toy-story-3-psp.html",
+          "https://galaxygamings.blogspot.com/2024/07/ratatouille-psp.html",
+          "https://galaxygamings.blogspot.com/2024/07/prince-of-persia-revelation-psp.html",
+          "https://galaxygamings.blogspot.com/2024/07/dead-to-rights-psp.html",
+          "https://galaxygamings.blogspot.com/2024/07/modern-combat-3-mod-114g-apk-obb.html",
+          "https://galaxygamings.blogspot.com/2024/07/gta-3-apk-obb.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-11T05:13:42.129383"
+        "last_posted_at": "2026-08-11T07:13:11.952240"
       }
     ],
     "last_upkeep_date": "2026-08-10"
