@@ -126,7 +126,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 204,
+    "gemz_balance": 194,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -177,12 +177,17 @@
           "https://galaxygamings.blogspot.com/2024/06/call-of-duty-roads-to-victory-ppsspp.html",
           "https://galaxygamings.blogspot.com/2024/06/james-camerons-avatarpsp.html",
           "https://galaxygamings.blogspot.com/2024/06/aliens-vs-predator-requiem-psp.html",
-          "https://galaxygamings.blogspot.com/2024/06/assassin-creed-bloodlines.html"
+          "https://galaxygamings.blogspot.com/2024/06/assassin-creed-bloodlines.html",
+          "https://galaxygamings.blogspot.com/2024/06/fifa-street-2024-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/06/g-force-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/gta-5-apk-obbfor-mobile.html",
+          "https://galaxygamings.blogspot.com/2024/06/ea-sports-fc-mobile-24-apk-obb.html",
+          "https://galaxygamings.blogspot.com/2024/06/dragon-ball-z-shin-budokai-psp-iso.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-12T11:50:33.534164"
+        "last_posted_at": "2026-08-12T13:16:39.116383"
       },
       {
         "channel_id": -1004427720231,
@@ -226,12 +231,17 @@
           "https://galaxygamings.blogspot.com/2024/06/call-of-duty-roads-to-victory-ppsspp.html",
           "https://galaxygamings.blogspot.com/2024/06/james-camerons-avatarpsp.html",
           "https://galaxygamings.blogspot.com/2024/06/aliens-vs-predator-requiem-psp.html",
-          "https://galaxygamings.blogspot.com/2024/06/assassin-creed-bloodlines.html"
+          "https://galaxygamings.blogspot.com/2024/06/assassin-creed-bloodlines.html",
+          "https://galaxygamings.blogspot.com/2024/06/fifa-street-2024-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/06/g-force-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/gta-5-apk-obbfor-mobile.html",
+          "https://galaxygamings.blogspot.com/2024/06/ea-sports-fc-mobile-24-apk-obb.html",
+          "https://galaxygamings.blogspot.com/2024/06/dragon-ball-z-shin-budokai-psp-iso.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-12T11:50:45.617649"
+        "last_posted_at": "2026-08-12T13:16:51.180637"
       }
     ],
     "last_upkeep_date": "2026-08-12"
