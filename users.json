@@ -164,7 +164,8 @@
       "pending_channel_id": null,
       "estimate": {}
     },
-    "channels": []
+    "channels": [],
+    "last_nudge_check_date": "2026-08-12"
   },
   "8342607225": {
     "is_admin": false,
@@ -349,6 +350,7 @@
         "last_posted_at": "2026-08-12T21:50:45.054698"
       }
     ],
-    "last_upkeep_date": "2026-08-12"
+    "last_upkeep_date": "2026-08-12",
+    "last_nudge_check_date": "2026-08-12"
   }
 }
