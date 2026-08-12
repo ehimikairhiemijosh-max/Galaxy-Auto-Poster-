@@ -18,6 +18,7 @@ from storage import (
     load_state, save_state, load_stats, load_users, save_users,
     get_user, load_broadcasts, save_broadcasts, now_iso,
     load_redeem_codes, save_redeem_codes, load_orders, save_orders,
+    load_scheduled_broadcasts, save_scheduled_broadcasts,
 )
 from telegram_api import (
     send_message, get_chat_member, get_chat, get_updates,
@@ -87,6 +88,7 @@ def advanced_keyboard():
             ["💚 Health", "🐛 Report Bug"],
             ["💬 Message User", "📈 Estimate Usage"],
             ["🎟️ Generate Code", "💳 Credit User"],
+            ["🔁 Manage Recurring Ads", "📣 Message All"],
             ["🗑️ Reset History", "📜 Logs"],
             ["⬅️ Back"],
         ],
@@ -614,6 +616,7 @@ def handle_onboarding_message(chat_id, user_id, users, message):
             "posts_per_cycle": None,
             "caption_template": None,
             "last_posted_at": None,
+            "created_at": now_iso(),
         })
         u["onboarding"]["step"] = None
         send_message(
@@ -679,28 +682,17 @@ def chat_id_of_bot(u):
 
 # ---------------- BROADCAST + STRIKE SYSTEM ----------------
 
-def cmd_broadcast_start(chat_id, user_id, users):
-    if not is_admin(user_id):
-        send_message(chat_id, "Admin only.")
-        return
-    u = get_user(users, user_id)
-    u["onboarding"]["step"] = "awaiting_broadcast"
-    send_message(chat_id, "Send the promo/ad text now. It will go to every connected channel.", reply_markup=cancel_only_keyboard())
-
-
-def handle_broadcast_message(chat_id, user_id, users, message):
-    u = get_user(users, user_id)
-    if u["onboarding"].get("step") != "awaiting_broadcast":
-        return False
-
-    u["onboarding"]["step"] = None
+def _send_broadcast_to_all_channels(users, source_chat_id, source_message_id):
+    """Sends a small 'Advertisement' label followed by a copy of the
+    source message to every connected channel, preserving all original
+    formatting (copyMessage keeps bold/links/quotes exactly as typed).
+    Returns (sent, failed) counts."""
     broadcasts = load_broadcasts()
     sent, failed = 0, 0
-    source_chat_id = message["chat"]["id"]
-    source_message_id = message["message_id"]
 
     for uid, target in users.items():
         for ch in target.get("channels", []):
+            send_message(ch["channel_id"], "📢 𝐀𝐃𝐕𝐄𝐑𝐓𝐈𝐒𝐄𝐌𝐄𝐍𝐓")
             r = copy_message(ch["channel_id"], source_chat_id, source_message_id)
             if r.get("ok"):
                 sent += 1
@@ -715,6 +707,35 @@ def handle_broadcast_message(chat_id, user_id, users, message):
                 failed += 1
 
     save_broadcasts(broadcasts)
+    return sent, failed
+
+
+def cmd_broadcast_start(chat_id, user_id, users):
+    if not is_admin(user_id):
+        send_message(chat_id, "Admin only.")
+        return
+    send_message(
+        chat_id,
+        "Send this once, or on a repeating schedule?",
+        reply_markup={
+            "inline_keyboard": [
+                [{"text": "📤 Send Once", "callback_data": "broadcast_once"}],
+                [{"text": "🔁 Repeat on a Schedule", "callback_data": "broadcast_recurring"}],
+            ]
+        },
+    )
+
+
+def handle_broadcast_message(chat_id, user_id, users, message):
+    u = get_user(users, user_id)
+    if u["onboarding"].get("step") != "awaiting_broadcast":
+        return False
+
+    u["onboarding"]["step"] = None
+    source_chat_id = message["chat"]["id"]
+    source_message_id = message["message_id"]
+    sent, failed = _send_broadcast_to_all_channels(users, source_chat_id, source_message_id)
+
     send_message(chat_id, f"Broadcast sent. Delivered: {sent}, Failed: {failed}", reply_markup=keyboard_for(user_id))
     return True
 
@@ -1094,6 +1115,38 @@ def cmd_my_referral(chat_id, user_id, users):
     )
 
 
+def cmd_message_all_start(chat_id, user_id, users):
+    if not is_admin(user_id):
+        send_message(chat_id, "Admin only.")
+        return
+    u = get_user(users, user_id)
+    u["onboarding"]["step"] = "awaiting_message_all"
+    send_message(chat_id, "Send the message now - it goes to every registered user's DM (not their channels).", reply_markup=cancel_only_keyboard())
+
+
+def handle_message_all_message(chat_id, user_id, users, message):
+    u = get_user(users, user_id)
+    if u["onboarding"].get("step") != "awaiting_message_all":
+        return False
+
+    u["onboarding"]["step"] = None
+    text = message.get("text", "")
+    if not text:
+        send_message(chat_id, "Send text only for now.", reply_markup=cancel_only_keyboard())
+        u["onboarding"]["step"] = "awaiting_message_all"
+        return True
+
+    sent = 0
+    for uid in users:
+        if uid == "__admin__":
+            continue
+        r = send_message(uid, f"📣 Message from the Galaxy Gamez team:\n\n{text}")
+        if r.get("ok"):
+            sent += 1
+    send_message(chat_id, f"✅ Sent to {sent} user(s).", reply_markup=keyboard_for(user_id))
+    return True
+
+
 def cmd_message_user_start(chat_id, user_id, users):
     if not is_admin(user_id):
         send_message(chat_id, "Admin only.")
@@ -1134,6 +1187,75 @@ def handle_msguser_text_message(chat_id, user_id, users, message):
     send_message(target_id, f"💬 Message from the Galaxy Gamez team:\n\n{text}")
     send_message(chat_id, f"✅ Sent to {target_id}. Send another, or tap ❌ Cancel when done.", reply_markup=cancel_only_keyboard())
     return True
+
+
+def handle_recurring_broadcast_message(chat_id, user_id, users, message):
+    u = get_user(users, user_id)
+    if u["onboarding"].get("step") != "awaiting_recurring_broadcast":
+        return False
+
+    interval_hours = u["onboarding"].get("recurring_interval_hours", 24)
+    u["onboarding"]["step"] = None
+
+    scheduled = load_scheduled_broadcasts()
+    scheduled.append({
+        "id": _generate_code(),
+        "source_chat_id": message["chat"]["id"],
+        "source_message_id": message["message_id"],
+        "interval_hours": interval_hours,
+        "next_run": now_iso(),
+        "created_at": now_iso(),
+        "active": True,
+    })
+    save_scheduled_broadcasts(scheduled)
+
+    send_message(
+        chat_id,
+        f"✅ Recurring ad scheduled - repeats every {interval_hours}hr, "
+        f"starting now. Manage or stop it anytime from ⚙️ Advanced → 🔁 Manage Recurring Ads.",
+        reply_markup=keyboard_for(user_id),
+    )
+    return True
+
+
+def cmd_manage_recurring(chat_id, user_id, users):
+    if not is_admin(user_id):
+        send_message(chat_id, "Admin only.")
+        return
+    scheduled = load_scheduled_broadcasts()
+    active = [s for s in scheduled if s.get("active")]
+    if not active:
+        send_message(chat_id, "No recurring ads running right now. Set one up from 📢 Broadcast → 🔁 Repeat on a Schedule.")
+        return
+
+    lines = [box("RECURRING ADS")]
+    rows = []
+    for s in active:
+        lines.append(f"\nID {s['id']} - every {s['interval_hours']}hr - next run: {s['next_run']}")
+        rows.append([{"text": f"🛑 Stop {s['id']}", "callback_data": f"stop_recurring_{s['id']}"}])
+    send_message(chat_id, "\n".join(lines), reply_markup={"inline_keyboard": rows})
+
+
+def run_scheduled_broadcasts(users):
+    """Checked every poll cycle. Fires any recurring broadcast that's due,
+    then reschedules it for the next interval. Returns True if anything
+    changed, for the caller's save decision."""
+    scheduled = load_scheduled_broadcasts()
+    changed = False
+
+    for s in scheduled:
+        if not s.get("active"):
+            continue
+        if datetime.utcnow() < datetime.fromisoformat(s["next_run"]):
+            continue
+
+        _send_broadcast_to_all_channels(users, s["source_chat_id"], s["source_message_id"])
+        s["next_run"] = (datetime.utcnow() + timedelta(hours=s["interval_hours"])).isoformat()
+        changed = True
+
+    if changed:
+        save_scheduled_broadcasts(scheduled)
+    return changed
 
 
 def cmd_estimate_start(chat_id, user_id, users):
@@ -1182,6 +1304,64 @@ def apply_daily_upkeep(users):
                 f"couldn't cover today's upkeep. Top up with 💰 Buy Gemz to "
                 f"resume.",
             )
+
+    return any_changed
+
+
+def check_inactive_and_broken_users(users):
+    """Run once per day per user (throttled via last_nudge_check_date).
+    Nudges two situations, at most one message every few days per user
+    so it never feels spammy:
+      - Broken setup: a channel was added 2+ days ago and has never
+        successfully posted (feed might be wrong/dead).
+      - Inactive: no interaction with the bot in 7+ days.
+    Returns True if anything changed, for the caller's save decision."""
+    today = date.today().isoformat()
+    any_changed = False
+
+    for uid, u in users.items():
+        if uid == "__admin__":
+            continue
+        if u.get("last_nudge_check_date") == today:
+            continue
+        u["last_nudge_check_date"] = today
+        any_changed = True
+
+        last_nudge = u.get("last_nudge_sent_at")
+        if last_nudge and (datetime.utcnow() - datetime.fromisoformat(last_nudge)) < timedelta(days=4):
+            continue  # nudged recently, don't pile on
+
+        broken_channels = []
+        for ch in u.get("channels", []):
+            created = ch.get("created_at")
+            if not created or ch.get("last_posted_at") or ch.get("paused"):
+                continue
+            age = datetime.utcnow() - datetime.fromisoformat(created)
+            if age > timedelta(days=2):
+                broken_channels.append(ch)
+
+        if broken_channels:
+            send_message(
+                uid,
+                f"👋 Noticed your channel hasn't posted anything yet since you "
+                f"connected it a couple days ago - that usually means the "
+                f"website/feed link needs a second look. Try 🔄 Refresh to "
+                f"check it, or {SUPPORT_HANDLE} if you're stuck." + CREDITS_LINE,
+            )
+            u["last_nudge_sent_at"] = now_iso()
+            continue  # one nudge type per check is enough
+
+        last_seen = u.get("last_seen_at")
+        if u.get("channels") and last_seen:
+            inactive_for = datetime.utcnow() - datetime.fromisoformat(last_seen)
+            if inactive_for > timedelta(days=7):
+                send_message(
+                    uid,
+                    f"👋 Haven't seen you in a while - your channel is still "
+                    f"running in the background. Pop in anytime to check "
+                    f"📊 Stats or 💎 My Gemz." + CREDITS_LINE,
+                )
+                u["last_nudge_sent_at"] = now_iso()
 
     return any_changed
 
@@ -1284,6 +1464,8 @@ TEXT_COMMANDS = {
     "📈 Estimate Usage": cmd_estimate_start, "/estimate": cmd_estimate_start,
     "🔗 My Referral Link": cmd_my_referral, "/referral": cmd_my_referral,
     "🎟️ Generate Code": cmd_gencode_start,
+    "🔁 Manage Recurring Ads": cmd_manage_recurring, "/manageads": cmd_manage_recurring,
+    "📣 Message All": cmd_message_all_start, "/messageall": cmd_message_all_start,
     "💳 Credit User": cmd_credit_start,
 }
 
@@ -1309,6 +1491,8 @@ def handle_message(message, users):
             return
 
     u = get_user(users, user_id)
+    if not is_admin(user_id):
+        u["last_seen_at"] = now_iso()
     if not is_admin(user_id) and not u.get("terms_accepted"):
         send_message(chat_id, TERMS_TEXT, reply_markup=terms_keyboard())
         return
@@ -1368,6 +1552,10 @@ def handle_message(message, users):
     if handle_bug_report_message(chat_id, user_id, users, message):
         return
     if handle_budget_message(chat_id, user_id, users, message):
+        return
+    if handle_recurring_broadcast_message(chat_id, user_id, users, message):
+        return
+    if handle_message_all_message(chat_id, user_id, users, message):
         return
     if handle_msguser_id_message(chat_id, user_id, users, message):
         return
@@ -1598,6 +1786,56 @@ def handle_callback(callback, users):
             reply_markup=cancel_only_keyboard(),
             parse_mode="Markdown",
         )
+        return
+
+    if data == "broadcast_once":
+        answer_callback(callback["id"])
+        u = get_user(users, user_id)
+        u["onboarding"]["step"] = "awaiting_broadcast"
+        send_message(chat_id, "Send the promo/ad text now. It will go to every connected channel.", reply_markup=cancel_only_keyboard())
+        return
+
+    if data == "broadcast_recurring":
+        answer_callback(callback["id"])
+        send_message(
+            chat_id,
+            "How often should this repeat?",
+            reply_markup={
+                "inline_keyboard": [
+                    [{"text": "Every 6 hours", "callback_data": "bcast_int_6"}],
+                    [{"text": "Every 12 hours", "callback_data": "bcast_int_12"}],
+                    [{"text": "Every 24 hours", "callback_data": "bcast_int_24"}],
+                    [{"text": "Every 3 days", "callback_data": "bcast_int_72"}],
+                    [{"text": "Every 7 days", "callback_data": "bcast_int_168"}],
+                ]
+            },
+        )
+        return
+
+    if data.startswith("bcast_int_"):
+        interval_hours = int(data.rsplit("_", 1)[1])
+        answer_callback(callback["id"])
+        u = get_user(users, user_id)
+        u["onboarding"]["step"] = "awaiting_recurring_broadcast"
+        u["onboarding"]["recurring_interval_hours"] = interval_hours
+        send_message(
+            chat_id,
+            f"Send the promo/ad content now - it'll repeat every "
+            f"{interval_hours}hr automatically to every connected channel "
+            f"until you stop it (⚙️ Advanced → 🔁 Manage Recurring Ads).",
+            reply_markup=cancel_only_keyboard(),
+        )
+        return
+
+    if data.startswith("stop_recurring_"):
+        stop_id = data[len("stop_recurring_"):]
+        scheduled = load_scheduled_broadcasts()
+        for s in scheduled:
+            if s["id"] == stop_id:
+                s["active"] = False
+        save_scheduled_broadcasts(scheduled)
+        answer_callback(callback["id"], "Stopped.")
+        send_message(chat_id, f"🛑 Recurring ad {stop_id} stopped.")
         return
 
     if data == "enter_budget":

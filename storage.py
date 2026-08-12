@@ -150,3 +150,14 @@ def load_orders():
 
 def save_orders(data):
     save_json(ORDERS_FILE, data)
+
+
+SCHEDULED_BROADCASTS_FILE = "scheduled_broadcasts.json"
+
+
+def load_scheduled_broadcasts():
+    return load_json(SCHEDULED_BROADCASTS_FILE, [])
+
+
+def save_scheduled_broadcasts(data):
+    save_json(SCHEDULED_BROADCASTS_FILE, data)

@@ -25,6 +25,7 @@ from storage import load_state, save_state, load_users, save_users, now_iso
 from bot_commands import (
     handle_message, handle_callback, ensure_default_admin,
     check_broadcast_strikes, check_referral_trials, apply_daily_upkeep,
+    run_scheduled_broadcasts, check_inactive_and_broken_users,
 )
 
 import requests
@@ -96,8 +97,10 @@ def poll_loop():
             strikes_changed = check_broadcast_strikes(users)
             trials_changed = check_referral_trials(users)
             upkeep_changed = apply_daily_upkeep(users)
+            broadcasts_ran = run_scheduled_broadcasts(users)
+            nudges_sent = check_inactive_and_broken_users(users)
 
-            if changed or updates or strikes_changed or trials_changed or upkeep_changed:
+            if changed or updates or strikes_changed or trials_changed or upkeep_changed or broadcasts_ran or nudges_sent:
                 save_state(state)
                 save_users(users)
                 git_sync.push_changes(
