@@ -71,6 +71,7 @@ def poll_loop():
 
             changed = False
             for update in updates:
+                _last_alive["ts"] = time.time()  # proof of life per-update, not just per-batch - a big backlog can legitimately take a while
                 state["last_update_id"] = update["update_id"] + 1
                 changed = True
                 try:
@@ -82,6 +83,15 @@ def poll_loop():
                         handle_message(update["message"], users)
                 except Exception as e:
                     print(f"ERROR handling update: {e}")
+
+                # Save both state AND users after EVERY update, not just at
+                # the end of the batch - these are cheap local writes (no
+                # git push yet), but they mean a watchdog restart mid-backlog
+                # can never lose track of what was already sent (which would
+                # otherwise risk duplicate posts) or reprocess handled
+                # messages.
+                save_state(state)
+                save_users(users)
 
             strikes_changed = check_broadcast_strikes(users)
             trials_changed = check_referral_trials(users)
