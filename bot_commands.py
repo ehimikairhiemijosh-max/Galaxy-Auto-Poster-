@@ -1,294 +1,138 @@
 """
-Galaxy Gamez - Command Handler (bot_commands.py)
-Runs every ~5 minutes via GitHub Actions (not an always-on bot).
+Galaxy Gamez - Render Command Server (bot_server.py)
+Always-on process replacing the old 5-minute GitHub Actions command check.
+Run with: gunicorn bot_server:app --workers 1 --timeout 120
+(MUST be --workers 1 - multiple workers would double-poll Telegram and
+cause duplicate replies / offset conflicts.)
 """
 
+import os
+import threading
+import time
+import socket
+
+socket.setdefaulttimeout(25)  # global safety net - no single network call can hang forever
+
+os.environ["RENDER"] = "1"
+
+import git_sync
+git_sync.ensure_repo()
+os.chdir(git_sync.REPO_DIR)
+
+from flask import Flask
+from config import BOT_TOKEN, ADMIN_CHAT_ID, API_BASE
+from storage import load_state, save_state, load_users, save_users, now_iso
+from bot_commands import (
+    handle_message, handle_callback, ensure_default_admin,
+    check_broadcast_strikes, check_referral_trials, apply_daily_upkeep,
+)
+
 import requests
-from datetime import datetime, timedelta, date
+requests.post(f"{API_BASE}/deleteWebhook", data={"drop_pending_updates": False}, timeout=15)
 
-from config import (
-    BOT_TOKEN, ADMIN_CHAT_ID, GITHUB_TOKEN, GITHUB_REPOSITORY,
-    FORCE_JOIN_CHATS, SUPPORT_HANDLE, STRIKE_LIMIT, BROADCAST_GRACE_HOURS,
-    API_BASE, MAX_CHANNELS_FREE, MAX_CHANNELS_PAID, PAYMENT_INFO,
-    MIN_MONTHLY_PRICE_NAIRA, MIN_YEARLY_PRICE_NAIRA, GEMZ_PACKAGES, NAIRA_PER_GEMZ,
-    REFERRAL_REWARD_GEMZ, BOT_USERNAME, GEMZ_COST_PER_CHANNEL_PER_DAY,
-    POST_NOW_COOLDOWN_SECONDS,
-)
-from storage import (
-    load_state, save_state, load_stats, load_users, save_users,
-    get_user, load_broadcasts, save_broadcasts, now_iso,
-    load_redeem_codes, save_redeem_codes, load_orders, save_orders,
-)
-from telegram_api import (
-    send_message, get_chat_member, get_chat, get_updates,
-    answer_callback, message_still_exists, forward_message, copy_message,
-)
-from main import get_feed_entries, ensure_default_admin
-from terms import TERMS_TEXT
-from estimator import estimate_days, format_duration
-from feed_discovery import discover_feed
-from textstyle import box
-import random
-import string
+app = Flask(__name__)
+POLL_INTERVAL = 2  # seconds between getUpdates calls - feels instant
 
-CREDITS_LINE = (
-    "\n\n┏━━━━━━━━━━━━━━━┓\n"
-    "   𝐂𝐑𝐄𝐃𝐈𝐓𝐒: @GALAXYGAMEZSUPPORT\n"
-    "┗━━━━━━━━━━━━━━━┛"
-)
-BOT_NAME = "𝐆𝐀𝐋𝐀𝐗𝐘 𝐀𝐔𝐓𝐎 𝐏𝐎𝐒𝐓𝐄𝐑"
+_last_alive = {"ts": time.time()}
 
 
-# ---------------- KEYBOARDS ----------------
-
-def public_keyboard():
-    return {
-        "keyboard": [
-            ["▶️ Post Now", "🔄 Refresh"],
-            ["⏭️ Skip", "🧪 Test"],
-            ["📊 Stats", "📡 Channels"],
-            ["➕ Add Channel", "📰 Add Blog"],
-            ["⏸️ My Channel Pause", "▶️ My Channel Resume"],
-            ["💎 My Gemz", "💰 Buy Gemz"],
-            ["🎁 Redeem Code", "📈 Estimate Usage"],
-            ["🔗 My Referral Link"],
-            ["🐛 Report Bug", "❓ Help"],
-        ],
-        "resize_keyboard": True,
-    }
+@app.route("/")
+def health():
+    return "Galaxy Gamez bot is running.", 200
 
 
-def admin_keyboard():
-    return {
-        "keyboard": [
-            ["▶️ Post Now", "🔄 Refresh"],
-            ["⏭️ Skip", "🧪 Test"],
-            ["📊 Stats", "💚 Health"],
-            ["📡 Channels", "⏸️ Pause"],
-            ["▶️ Resume", "📢 Broadcast"],
-            ["👥 Users", "💬 Message User"],
-            ["🎟️ Generate Code", "💳 Credit User"],
-            ["⚙️ Advanced", "📈 Estimate Usage"],
-            ["🐛 Report Bug", "❓ Help"],
-        ],
-        "resize_keyboard": True,
-    }
+def poll_loop():
+    print("Poll loop started.")
+    last_pull = 0
+    last_heartbeat = 0
+    PULL_INTERVAL = 20  # seconds - no need to pull every 2s, GitHub Actions only touches this hourly
+    HEARTBEAT_INTERVAL = 60
+
+    while True:
+        _last_alive["ts"] = time.time()  # proof of life, checked by the watchdog below
+        try:
+            if time.time() - last_heartbeat >= HEARTBEAT_INTERVAL:
+                print(f"Heartbeat - poll loop alive at {now_iso()}")
+                last_heartbeat = time.time()
+
+            if time.time() - last_pull >= PULL_INTERVAL:
+                git_sync.pull_latest()
+                last_pull = time.time()
+
+            state = load_state()
+            offset = state.get("last_update_id", 0)
+            users = load_users()
+            users = ensure_default_admin(users)
+
+            from telegram_api import get_updates
+            updates = get_updates(offset)
+            if updates:
+                print(f"Got {len(updates)} update(s), offset was {offset}")
+
+            changed = False
+            for update in updates:
+                _last_alive["ts"] = time.time()  # proof of life per-update, not just per-batch - a big backlog can legitimately take a while
+                state["last_update_id"] = update["update_id"] + 1
+                changed = True
+                try:
+                    if "callback_query" in update:
+                        print(f"Handling callback from {update['callback_query']['from']['id']}")
+                        handle_callback(update["callback_query"], users)
+                    elif "message" in update:
+                        print(f"Handling message from {update['message']['from']['id']}: {update['message'].get('text')}")
+                        handle_message(update["message"], users)
+                except Exception as e:
+                    print(f"ERROR handling update: {e}")
+
+                # Save both state AND users after EVERY update, not just at
+                # the end of the batch - these are cheap local writes (no
+                # git push yet), but they mean a watchdog restart mid-backlog
+                # can never lose track of what was already sent (which would
+                # otherwise risk duplicate posts) or reprocess handled
+                # messages.
+                save_state(state)
+                save_users(users)
+
+            strikes_changed = check_broadcast_strikes(users)
+            trials_changed = check_referral_trials(users)
+            upkeep_changed = apply_daily_upkeep(users)
+
+            if changed or updates or strikes_changed or trials_changed or upkeep_changed:
+                save_state(state)
+                save_users(users)
+                git_sync.push_changes(
+                    "Bot state update [skip ci]",
+                    ["state.json", "users.json", "broadcasts.json", "redeem_codes.json"],
+                )
+        except Exception as e:
+            print(f"Poll loop error: {e}")
+
+        time.sleep(POLL_INTERVAL)
 
 
-def advanced_keyboard():
-    return {
-        "keyboard": [
-            ["🗑️ Reset History", "📜 Logs"],
-            ["⬅️ Back"],
-        ],
-        "resize_keyboard": True,
-    }
+def watchdog_loop():
+    """If the poll loop ever stops updating its proof-of-life timestamp
+    (hung on something we didn't anticipate), force-kill the whole process.
+    Render detects a crashed process and restarts it automatically within
+    seconds - this is separate from the Auto-Deploy setting we turned off,
+    so it's safe and won't reintroduce the redeploy-on-every-commit problem."""
+    WATCHDOG_CHECK_EVERY = 15
+    STUCK_THRESHOLD = 90
+
+    while True:
+        time.sleep(WATCHDOG_CHECK_EVERY)
+        stuck_for = time.time() - _last_alive["ts"]
+        if stuck_for > STUCK_THRESHOLD:
+            print(f"WATCHDOG: poll loop stuck for {stuck_for:.0f}s - forcing restart.")
+            os._exit(1)
 
 
-def cancel_only_keyboard():
-    return {"keyboard": [["❌ Cancel"]], "resize_keyboard": True}
+threading.Thread(target=poll_loop, daemon=True).start()
+threading.Thread(target=watchdog_loop, daemon=True).start()
 
-
-def force_join_keyboard():
-    rows = []
-    for c in FORCE_JOIN_CHATS:
-        info = get_chat(f"@{c['username']}")
-        title = info["result"]["title"] if info.get("ok") else c["label"]
-        icon = "📢" if info.get("ok") and info["result"].get("type") == "channel" else "💬"
-        rows.append([{"text": f"{icon} {title}", "url": c["url"]}])
-    rows.append([{"text": "✅ I've Joined - Continue", "callback_data": "check_join"}])
-    return {"inline_keyboard": rows}
-
-
-def schedule_unit_keyboard():
-    return {
-        "inline_keyboard": [
-            [{"text": "⏰ Hours", "callback_data": "sched_unit_hours"}],
-            [{"text": "📅 Days", "callback_data": "sched_unit_days"}],
-        ]
-    }
-
-
-def schedule_hours_keyboard():
-    from config import SCHEDULE_HOUR_OPTIONS
-    row = [{"text": f"{h}hr", "callback_data": f"sched_hours_{h}"} for h in SCHEDULE_HOUR_OPTIONS]
-    return {"inline_keyboard": [row[i:i + 3] for i in range(0, len(row), 3)]}
-
-
-def schedule_days_keyboard():
-    from config import SCHEDULE_DAY_OPTIONS
-    row = [{"text": f"{d}d", "callback_data": f"sched_days_{d}"} for d in SCHEDULE_DAY_OPTIONS]
-    return {"inline_keyboard": [row[i:i + 3] for i in range(0, len(row), 3)]}
-
-
-def posts_per_cycle_keyboard():
-    from config import POSTS_PER_CYCLE_OPTIONS
-    row = [{"text": f"{n} post{'s' if n != 1 else ''}", "callback_data": f"ppc_{n}"} for n in POSTS_PER_CYCLE_OPTIONS]
-    return {"inline_keyboard": [row[i:i + 2] for i in range(0, len(row), 2)]}
-
-
-def caption_format_keyboard():
-    return {
-        "inline_keyboard": [
-            [{"text": "✅ Use Default Format", "callback_data": "caption_default"}],
-            [{"text": "✏️ Create My Own Format", "callback_data": "caption_custom"}],
-        ]
-    }
-
-
-def terms_keyboard():
-    return {"inline_keyboard": [[{"text": "✅ I Agree", "callback_data": "accept_terms"}]]}
-
-
-def estimate_channels_keyboard():
-    return {"inline_keyboard": [[{"text": str(n), "callback_data": f"est_ch_{n}"} for n in range(1, 5)]]}
-
-
-def estimate_unit_keyboard():
-    return {
-        "inline_keyboard": [
-            [{"text": "⏰ Hours", "callback_data": "est_unit_hours"}],
-            [{"text": "📅 Days", "callback_data": "est_unit_days"}],
-        ]
-    }
-
-
-def estimate_hours_keyboard():
-    from config import SCHEDULE_HOUR_OPTIONS
-    row = [{"text": f"{h}hr", "callback_data": f"est_hours_{h}"} for h in SCHEDULE_HOUR_OPTIONS]
-    return {"inline_keyboard": [row[i:i + 3] for i in range(0, len(row), 3)]}
-
-
-def estimate_days_keyboard():
-    from config import SCHEDULE_DAY_OPTIONS
-    row = [{"text": f"{d}d", "callback_data": f"est_days_{d}"} for d in SCHEDULE_DAY_OPTIONS]
-    return {"inline_keyboard": [row[i:i + 3] for i in range(0, len(row), 3)]}
-
-
-def estimate_ppc_keyboard():
-    from config import POSTS_PER_CYCLE_OPTIONS
-    row = [{"text": f"{n} post{'s' if n != 1 else ''}", "callback_data": f"est_ppc_{n}"} for n in POSTS_PER_CYCLE_OPTIONS]
-    return {"inline_keyboard": [row[i:i + 2] for i in range(0, len(row), 2)]}
-
-
-# ---------------- FORCE-JOIN CHECK ----------------
-
-def is_member(username, user_id):
-    data = get_chat_member(f"@{username}", user_id)
-    if not data.get("ok"):
-        return False
-    status = data["result"].get("status")
-    return status in ("member", "administrator", "creator")
-
-
-def missing_joins(user_id):
-    missing = []
-    for c in FORCE_JOIN_CHATS:
-        if not is_member(c["username"], user_id):
-            missing.append(c)
-    return missing
-
-
-def send_join_gate(chat_id, first_name=None):
-    greeting = f"👋 Hey {first_name}!" if first_name else "👋 Hey there!"
-    send_message(
-        chat_id,
-        f"{greeting} Welcome to {BOT_NAME}.\n\n"
-        f"Before we get started, please join the official Galaxy Gamez "
-        f"channels and groups below - this keeps you in the loop on "
-        f"updates, new features, and support. Once you've joined "
-        f"everything, tap the button underneath to continue."
-        + CREDITS_LINE,
-        reply_markup=force_join_keyboard(),
-    )
-
-
-# ---------------- ADMIN CHECK ----------------
-
-def is_admin(user_id):
-    return str(user_id) == str(ADMIN_CHAT_ID)
-
-
-# ---------------- COMMAND HANDLERS ----------------
-
-def cmd_post(chat_id, user_id, users):
-    from main import run_posting_cycle
-    target_id = "__admin__" if is_admin(user_id) else str(user_id)
-    u = get_user(users, target_id)
-
-    if not is_admin(user_id):
-        state = load_state()
-        if state.get("paused"):
-            send_message(chat_id, "⏸️ Posting is currently paused platform-wide by the team - Post Now is unavailable until it resumes. You'll be notified automatically when it's back.")
-            return
-
-    last_run = u.get("last_post_now_at")
-    if last_run:
-        elapsed = (datetime.utcnow() - datetime.fromisoformat(last_run)).total_seconds()
-        if elapsed < POST_NOW_COOLDOWN_SECONDS:
-            wait = int(POST_NOW_COOLDOWN_SECONDS - elapsed)
-            send_message(chat_id, f"⏳ Still working through your last Post Now - try again in {wait}s. (This limit stops rapid taps from tying up the whole bot for everyone.)")
-            return
-
-    u["last_post_now_at"] = now_iso()
-    send_message(chat_id, "Starting a posting cycle now (your channels only)...")
-    results = run_posting_cycle(manual=True, only_user_id=target_id, users=users)
-    send_message(chat_id, _format_post_results(results, users, target_id))
-
-
-def _format_post_results(results, users, target_id):
-    if not results:
-        return "Done ✅ - nothing to post right now."
-
-    by_channel = {}
-    for line in results:
-        channel_id, _, detail = line.partition(": ")
-        by_channel.setdefault(channel_id, []).append(detail)
-
-    u = get_user(users, target_id)
-    channel_titles = {str(ch["channel_id"]): ch.get("title", "Channel") for ch in u.get("channels", [])}
-
-    out = [box("POSTING COMPLETE")]
-    total_ok = 0
-    for channel_id, details in by_channel.items():
-        title = channel_titles.get(channel_id, channel_id)
-        out.append(f"\n📢 {title}")
-        for d in details:
-            if d.startswith("OK - "):
-                out.append(f"  ✅ {d[5:]}")
-                total_ok += 1
-            elif d.startswith("FAILED"):
-                out.append(f"  ❌ {d}")
-            else:
-                out.append(f"  ℹ️ {d}")
-    out.append(f"\nTotal posted: {total_ok}")
-    return "\n".join(out)
-
-
-def cmd_refresh(chat_id, user_id, users):
-    u = get_user(users, user_id)
-    if not u["channels"]:
-        send_message(chat_id, "You haven't added a channel yet. Use ➕ Add Channel first.")
-        return
-    lines = ["Feed refreshed."]
-    for ch in u["channels"]:
-        entries = get_feed_entries(ch["blog_feed_url"])
-        unposted = len([e for e in entries if e.link not in ch.get("posted", [])])
-        lines.append(f"{ch['channel_id']}: {len(entries)} total, {unposted} unposted")
-    send_message(chat_id, "\n".join(lines))
-
-
-def cmd_skip(chat_id, user_id, users):
-    u = get_user(users, user_id)
-    if not u["channels"]:
-        send_message(chat_id, "No channel added yet.")
-        return
-    ch = u["channels"][0]
-    entries = get_feed_entries(ch["blog_feed_url"])
-    posted = ch.setdefault("posted", [])
-    for e in entries:
-        if e.link not in posted:
-            posted.append(e.link)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
+         posted.append(e.link)
             send_message(chat_id, f"Skipped: {e.title}")
             return
     send_message(chat_id, "Nothing to skip - no unposted posts found.")
