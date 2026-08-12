@@ -141,7 +141,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 174,
+    "gemz_balance": 164,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -207,12 +207,17 @@
           "https://galaxygamings.blogspot.com/2024/06/manhunt-2-ppsspp.html",
           "https://galaxygamings.blogspot.com/2024/06/dragon-ball-z-shin-budokai-4.html",
           "https://galaxygamings.blogspot.com/2024/06/dragon-ball-z-shin-budokai-6-ppsspp.html",
-          "https://galaxygamings.blogspot.com/2024/06/tomb-raider-anniversary-psp.html"
+          "https://galaxygamings.blogspot.com/2024/06/tomb-raider-anniversary-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/the-mummy-tomb-of-dragon-emperor-ps2-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/cars-2-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/efootball-psp-2025-ps4-camera.html",
+          "https://galaxygamings.blogspot.com/2024/06/the-wolf-among-us.html",
+          "https://galaxygamings.blogspot.com/2024/06/god-hand-ps2-iso.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-12T16:05:49.211572"
+        "last_posted_at": "2026-08-12T17:59:10.599724"
       },
       {
         "channel_id": -1004427720231,
@@ -271,12 +276,17 @@
           "https://galaxygamings.blogspot.com/2024/06/manhunt-2-ppsspp.html",
           "https://galaxygamings.blogspot.com/2024/06/dragon-ball-z-shin-budokai-4.html",
           "https://galaxygamings.blogspot.com/2024/06/dragon-ball-z-shin-budokai-6-ppsspp.html",
-          "https://galaxygamings.blogspot.com/2024/06/tomb-raider-anniversary-psp.html"
+          "https://galaxygamings.blogspot.com/2024/06/tomb-raider-anniversary-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/the-mummy-tomb-of-dragon-emperor-ps2-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/cars-2-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/efootball-psp-2025-ps4-camera.html",
+          "https://galaxygamings.blogspot.com/2024/06/the-wolf-among-us.html",
+          "https://galaxygamings.blogspot.com/2024/06/god-hand-ps2-iso.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-12T16:06:01.143478"
+        "last_posted_at": "2026-08-12T17:59:23.020254"
       }
     ],
     "last_upkeep_date": "2026-08-12"
