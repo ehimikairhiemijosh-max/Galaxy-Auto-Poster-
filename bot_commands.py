@@ -45,14 +45,23 @@ def public_keyboard():
     return {
         "keyboard": [
             ["▶️ Post Now", "🔄 Refresh"],
-            ["⏭️ Skip", "🧪 Test"],
             ["📊 Stats", "📡 Channels"],
             ["➕ Add Channel", "📰 Add Blog"],
-            ["⏸️ My Channel Pause", "▶️ My Channel Resume"],
             ["💎 My Gemz", "💰 Buy Gemz"],
+            ["⚙️ More", "❓ Help"],
+        ],
+        "resize_keyboard": True,
+    }
+
+
+def public_more_keyboard():
+    return {
+        "keyboard": [
+            ["⏭️ Skip", "🧪 Test"],
+            ["⏸️ My Channel Pause", "▶️ My Channel Resume"],
             ["🎁 Redeem Code", "📈 Estimate Usage"],
-            ["🔗 My Referral Link"],
-            ["🐛 Report Bug", "❓ Help"],
+            ["🔗 My Referral Link", "🐛 Report Bug"],
+            ["⬅️ Back"],
         ],
         "resize_keyboard": True,
     }
@@ -62,14 +71,10 @@ def admin_keyboard():
     return {
         "keyboard": [
             ["▶️ Post Now", "🔄 Refresh"],
-            ["⏭️ Skip", "🧪 Test"],
-            ["📊 Stats", "💚 Health"],
-            ["📡 Channels", "⏸️ Pause"],
-            ["▶️ Resume", "📢 Broadcast"],
-            ["👥 Users", "💬 Message User"],
-            ["🎟️ Generate Code", "💳 Credit User"],
-            ["⚙️ Advanced", "📈 Estimate Usage"],
-            ["🐛 Report Bug", "❓ Help"],
+            ["📊 Stats", "📡 Channels"],
+            ["⏸️ Pause", "▶️ Resume"],
+            ["📢 Broadcast", "👥 Users"],
+            ["⚙️ Advanced", "❓ Help"],
         ],
         "resize_keyboard": True,
     }
@@ -78,6 +83,10 @@ def admin_keyboard():
 def advanced_keyboard():
     return {
         "keyboard": [
+            ["⏭️ Skip", "🧪 Test"],
+            ["💚 Health", "🐛 Report Bug"],
+            ["💬 Message User", "📈 Estimate Usage"],
+            ["🎟️ Generate Code", "💳 Credit User"],
             ["🗑️ Reset History", "📜 Logs"],
             ["⬅️ Back"],
         ],
@@ -1322,6 +1331,9 @@ def handle_message(message, users):
 
     if text == "⚙️ Advanced" and is_admin(user_id):
         send_message(chat_id, "Advanced menu:", reply_markup=advanced_keyboard())
+        return
+    if text == "⚙️ More" and not is_admin(user_id):
+        send_message(chat_id, "More options:", reply_markup=public_more_keyboard())
         return
     if text == "⬅️ Back":
         send_message(chat_id, "Main menu:", reply_markup=keyboard_for(user_id))
