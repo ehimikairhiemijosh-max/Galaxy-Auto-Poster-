@@ -111,7 +111,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 224,
+    "gemz_balance": 214,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -152,12 +152,17 @@
           "https://galaxygamings.blogspot.com/2024/06/shrek-third-psp.html",
           "https://galaxygamings.blogspot.com/2024/06/spider-man-total-mayhem-hd.html",
           "https://galaxygamings.blogspot.com/2024/06/iron-man-psp.html",
-          "https://galaxygamings.blogspot.com/2024/06/tekken-6-psp.html"
+          "https://galaxygamings.blogspot.com/2024/06/tekken-6-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/metal-gear-solid-peace-walker-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/ben-10-protector-of-earth-psp-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/dragon-ball-z-shin-budokai-2-psp-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/dante-inferno-psp-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/efootball-pes-2025-ppsspp-update.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-12T08:21:07.507201"
+        "last_posted_at": "2026-08-12T10:10:13.067566"
       },
       {
         "channel_id": -1004427720231,
@@ -191,12 +196,17 @@
           "https://galaxygamings.blogspot.com/2024/06/shrek-third-psp.html",
           "https://galaxygamings.blogspot.com/2024/06/spider-man-total-mayhem-hd.html",
           "https://galaxygamings.blogspot.com/2024/06/iron-man-psp.html",
-          "https://galaxygamings.blogspot.com/2024/06/tekken-6-psp.html"
+          "https://galaxygamings.blogspot.com/2024/06/tekken-6-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/metal-gear-solid-peace-walker-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/ben-10-protector-of-earth-psp-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/dragon-ball-z-shin-budokai-2-psp-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/dante-inferno-psp-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/efootball-pes-2025-ppsspp-update.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-12T08:21:19.862473"
+        "last_posted_at": "2026-08-12T10:10:25.978852"
       }
     ],
     "last_upkeep_date": "2026-08-12"
