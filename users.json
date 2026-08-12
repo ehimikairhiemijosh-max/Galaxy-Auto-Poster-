@@ -156,7 +156,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 154,
+    "gemz_balance": 144,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -232,12 +232,17 @@
           "https://galaxygamings.blogspot.com/2024/07/crash-n-burn-ps2-iso.html",
           "https://galaxygamings.blogspot.com/2024/07/135mbthe-3rd-birthday-highly-compressed.html",
           "https://galaxygamings.blogspot.com/2024/07/470mbsilent-hill-origins-highly.html",
-          "https://galaxygamings.blogspot.com/2024/07/hell-boy-psp-game-iso-download.html"
+          "https://galaxygamings.blogspot.com/2024/07/hell-boy-psp-game-iso-download.html",
+          "https://galaxygamings.blogspot.com/2024/07/wr3d-2k24-mod.html",
+          "https://galaxygamings.blogspot.com/2024/07/bleach-heat-soul-7-psp.html",
+          "https://galaxygamings.blogspot.com/2024/07/toy-story-3-psp.html",
+          "https://galaxygamings.blogspot.com/2024/07/ratatouille-psp.html",
+          "https://galaxygamings.blogspot.com/2024/07/prince-of-persia-revelation-psp.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-12T19:15:26.204326"
+        "last_posted_at": "2026-08-12T20:50:09.901814"
       },
       {
         "channel_id": -1004427720231,
@@ -306,12 +311,17 @@
           "https://galaxygamings.blogspot.com/2024/07/crash-n-burn-ps2-iso.html",
           "https://galaxygamings.blogspot.com/2024/07/135mbthe-3rd-birthday-highly-compressed.html",
           "https://galaxygamings.blogspot.com/2024/07/470mbsilent-hill-origins-highly.html",
-          "https://galaxygamings.blogspot.com/2024/07/hell-boy-psp-game-iso-download.html"
+          "https://galaxygamings.blogspot.com/2024/07/hell-boy-psp-game-iso-download.html",
+          "https://galaxygamings.blogspot.com/2024/07/wr3d-2k24-mod.html",
+          "https://galaxygamings.blogspot.com/2024/07/bleach-heat-soul-7-psp.html",
+          "https://galaxygamings.blogspot.com/2024/07/toy-story-3-psp.html",
+          "https://galaxygamings.blogspot.com/2024/07/ratatouille-psp.html",
+          "https://galaxygamings.blogspot.com/2024/07/prince-of-persia-revelation-psp.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-12T19:15:38.416229"
+        "last_posted_at": "2026-08-12T20:50:21.872340"
       }
     ],
     "last_upkeep_date": "2026-08-12"
