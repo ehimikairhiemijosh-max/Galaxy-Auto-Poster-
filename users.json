@@ -4,7 +4,7 @@
     "banned": false,
     "strikes": 0,
     "onboarding": {
-      "step": null,
+      "step": "awaiting_message_all",
       "pending_channel_id": null,
       "estimate": {},
       "msg_target": "8342607225",
