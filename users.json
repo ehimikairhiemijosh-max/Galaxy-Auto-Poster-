@@ -370,7 +370,7 @@
     "referred_by": null,
     "referral_completed": false,
     "onboarding": {
-      "step": null,
+      "step": "awaiting_channel",
       "pending_channel_id": null
     },
     "channels": [
@@ -388,7 +388,7 @@
       }
     ],
     "last_nudge_check_date": "2026-08-13",
-    "last_seen_at": "2026-08-13T23:27:04.680054",
+    "last_seen_at": "2026-08-13T23:27:13.542529",
     "last_upkeep_date": "2026-08-13"
   }
 }
