@@ -248,7 +248,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 30,
+    "gemz_balance": 20,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -276,12 +276,17 @@
           "https://galaxygamings.blogspot.com/2024/05/real-drift-car-racing-v508-mod-apk-obb.html",
           "https://galaxygamings.blogspot.com/2024/05/gta-chinatown-wars-v44180.html",
           "https://galaxygamings.blogspot.com/2024/05/ghost-rider-psp.html",
-          "https://galaxygamings.blogspot.com/2024/05/x-men-legends-rise-of-apocalypse-psp.html"
+          "https://galaxygamings.blogspot.com/2024/05/x-men-legends-rise-of-apocalypse-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/gta-liberty-city-stories.html",
+          "https://galaxygamings.blogspot.com/2024/06/gta-san-andreas.html",
+          "https://galaxygamings.blogspot.com/2024/06/grand-theft-auto-vice-city.html",
+          "https://galaxygamings.blogspot.com/2024/06/undead-knights-psp-game.html",
+          "https://galaxygamings.blogspot.com/2024/06/wwe-2k24-ppsspp.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-13T16:59:21.039238"
+        "last_posted_at": "2026-08-13T18:01:16.783214"
       },
       {
         "channel_id": -1004427720231,
@@ -302,12 +307,17 @@
           "https://galaxygamings.blogspot.com/2024/05/real-drift-car-racing-v508-mod-apk-obb.html",
           "https://galaxygamings.blogspot.com/2024/05/gta-chinatown-wars-v44180.html",
           "https://galaxygamings.blogspot.com/2024/05/ghost-rider-psp.html",
-          "https://galaxygamings.blogspot.com/2024/05/x-men-legends-rise-of-apocalypse-psp.html"
+          "https://galaxygamings.blogspot.com/2024/05/x-men-legends-rise-of-apocalypse-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/gta-liberty-city-stories.html",
+          "https://galaxygamings.blogspot.com/2024/06/gta-san-andreas.html",
+          "https://galaxygamings.blogspot.com/2024/06/grand-theft-auto-vice-city.html",
+          "https://galaxygamings.blogspot.com/2024/06/undead-knights-psp-game.html",
+          "https://galaxygamings.blogspot.com/2024/06/wwe-2k24-ppsspp.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-13T16:59:33.109858"
+        "last_posted_at": "2026-08-13T18:01:29.151470"
       }
     ],
     "last_upkeep_date": "2026-08-13",
