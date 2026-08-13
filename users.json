@@ -390,10 +390,10 @@
         "channel_id": -1003487329011,
         "title": "Connected channel",
         "blog_feed_url": "https://temzygamings.blogspot.com/feeds/posts/default",
-        "paused": true,
+        "paused": false,
         "posted": [],
         "interval_hours": 3,
-        "posts_per_cycle": null,
+        "posts_per_cycle": 3,
         "caption_template": null,
         "last_posted_at": null,
         "created_at": "2026-08-13T23:27:36.516551"
