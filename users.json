@@ -390,7 +390,7 @@
         "channel_id": -1003487329011,
         "title": "Connected channel",
         "blog_feed_url": "https://temzygamings.blogspot.com/feeds/posts/default",
-        "paused": false,
+        "paused": true,
         "posted": [],
         "interval_hours": 3,
         "posts_per_cycle": 3,
@@ -400,7 +400,8 @@
       }
     ],
     "last_nudge_check_date": "2026-08-13",
-    "last_seen_at": "2026-08-13T23:30:07.897563",
-    "last_upkeep_date": "2026-08-13"
+    "last_seen_at": "2026-08-13T23:31:39.746073",
+    "last_upkeep_date": "2026-08-13",
+    "last_post_now_at": "2026-08-13T23:31:39.746232"
   }
 }
