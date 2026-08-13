@@ -203,7 +203,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 90,
+    "gemz_balance": 80,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -309,12 +309,17 @@
           "https://galaxygamings.blogspot.com/2024/08/homebrew-games-for-ppsspp.html",
           "https://galaxygamings.blogspot.com/2024/08/320mbprince-of-persia-forgotten-sands.html",
           "https://galaxygamings.blogspot.com/2024/08/wwe-2k24-ppsspp-highly-compressed.html",
-          "https://galaxygamings.blogspot.com/2024/08/230mb-spider-man-web-of-shadows-highly.html"
+          "https://galaxygamings.blogspot.com/2024/08/230mb-spider-man-web-of-shadows-highly.html",
+          "https://galaxygamings.blogspot.com/2024/08/300mb-first-touch-soccer-2024-fts24-apk.html",
+          "https://galaxygamings.blogspot.com/2024/08/600mb-oddworld-stranger-wrath-apk-mod.html",
+          "https://galaxygamings.blogspot.com/2024/08/obscure-aftermath-ppsspp-highly.html",
+          "https://galaxygamings.blogspot.com/2024/08/150mb-wipeout-pure-ppsspp-highly.html",
+          "https://galaxygamings.blogspot.com/2024/08/300mb-gi-joe-rise-of-cobra-highly.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-13T06:19:32.278201"
+        "last_posted_at": "2026-08-13T08:23:35.971592"
       },
       {
         "channel_id": -1004427720231,
@@ -413,12 +418,17 @@
           "https://galaxygamings.blogspot.com/2024/08/homebrew-games-for-ppsspp.html",
           "https://galaxygamings.blogspot.com/2024/08/320mbprince-of-persia-forgotten-sands.html",
           "https://galaxygamings.blogspot.com/2024/08/wwe-2k24-ppsspp-highly-compressed.html",
-          "https://galaxygamings.blogspot.com/2024/08/230mb-spider-man-web-of-shadows-highly.html"
+          "https://galaxygamings.blogspot.com/2024/08/230mb-spider-man-web-of-shadows-highly.html",
+          "https://galaxygamings.blogspot.com/2024/08/300mb-first-touch-soccer-2024-fts24-apk.html",
+          "https://galaxygamings.blogspot.com/2024/08/600mb-oddworld-stranger-wrath-apk-mod.html",
+          "https://galaxygamings.blogspot.com/2024/08/obscure-aftermath-ppsspp-highly.html",
+          "https://galaxygamings.blogspot.com/2024/08/150mb-wipeout-pure-ppsspp-highly.html",
+          "https://galaxygamings.blogspot.com/2024/08/300mb-gi-joe-rise-of-cobra-highly.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-13T06:19:44.251631"
+        "last_posted_at": "2026-08-13T08:23:48.051160"
       }
     ],
     "last_upkeep_date": "2026-08-13",
