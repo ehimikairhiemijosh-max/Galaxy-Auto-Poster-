@@ -102,28 +102,28 @@
     "user_id": "__admin__",
     "message_id": 4534,
     "sent_at": "2026-08-13T19:08:11.214731",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1002685110307,
     "user_id": "__admin__",
     "message_id": 3166,
     "sent_at": "2026-08-13T19:08:12.495326",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1002353908594,
     "user_id": "__admin__",
     "message_id": 885,
     "sent_at": "2026-08-13T19:08:13.828200",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1002721819829,
     "user_id": "__admin__",
     "message_id": 714,
     "sent_at": "2026-08-13T19:08:15.131259",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1004427720231,
