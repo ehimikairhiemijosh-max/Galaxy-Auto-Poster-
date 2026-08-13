@@ -166,14 +166,14 @@
       "estimate": {}
     },
     "channels": [],
-    "last_nudge_check_date": "2026-08-12"
+    "last_nudge_check_date": "2026-08-13"
   },
   "8342607225": {
     "is_admin": false,
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 124,
+    "gemz_balance": 120,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -361,8 +361,8 @@
         "last_posted_at": "2026-08-12T23:09:28.279980"
       }
     ],
-    "last_upkeep_date": "2026-08-12",
-    "last_nudge_check_date": "2026-08-12",
+    "last_upkeep_date": "2026-08-13",
+    "last_nudge_check_date": "2026-08-13",
     "last_seen_at": "2026-08-12T23:10:34.764259",
     "last_post_now_at": "2026-08-12T23:08:56.518200"
   }
