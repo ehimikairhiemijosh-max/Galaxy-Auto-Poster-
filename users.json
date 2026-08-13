@@ -392,7 +392,7 @@
         "blog_feed_url": "https://temzygamings.blogspot.com/feeds/posts/default",
         "paused": true,
         "posted": [],
-        "interval_hours": null,
+        "interval_hours": 3,
         "posts_per_cycle": null,
         "caption_template": null,
         "last_posted_at": null,
