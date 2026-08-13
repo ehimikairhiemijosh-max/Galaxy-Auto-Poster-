@@ -130,13 +130,13 @@
     "user_id": "8342607225",
     "message_id": 907,
     "sent_at": "2026-08-13T19:08:16.421741",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1004427720231,
     "user_id": "8342607225",
     "message_id": 909,
     "sent_at": "2026-08-13T19:08:17.707005",
-    "checked": false
+    "checked": true
   }
 ]
