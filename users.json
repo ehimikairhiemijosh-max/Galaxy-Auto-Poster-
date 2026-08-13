@@ -248,7 +248,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 20,
+    "gemz_balance": 10,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -281,12 +281,17 @@
           "https://galaxygamings.blogspot.com/2024/06/gta-san-andreas.html",
           "https://galaxygamings.blogspot.com/2024/06/grand-theft-auto-vice-city.html",
           "https://galaxygamings.blogspot.com/2024/06/undead-knights-psp-game.html",
-          "https://galaxygamings.blogspot.com/2024/06/wwe-2k24-ppsspp.html"
+          "https://galaxygamings.blogspot.com/2024/06/wwe-2k24-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/06/the-godfather-psp-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/wwe-smackdown-vs-raw-2k14.html",
+          "https://galaxygamings.blogspot.com/2024/06/spider-man-miles-morales-apk.html",
+          "https://galaxygamings.blogspot.com/2024/06/mortal-kombat-unchained.html",
+          "https://galaxygamings.blogspot.com/2024/06/shrek-third-psp.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-13T18:01:16.783214"
+        "last_posted_at": "2026-08-13T19:56:12.110517"
       },
       {
         "channel_id": -1004427720231,
@@ -312,12 +317,17 @@
           "https://galaxygamings.blogspot.com/2024/06/gta-san-andreas.html",
           "https://galaxygamings.blogspot.com/2024/06/grand-theft-auto-vice-city.html",
           "https://galaxygamings.blogspot.com/2024/06/undead-knights-psp-game.html",
-          "https://galaxygamings.blogspot.com/2024/06/wwe-2k24-ppsspp.html"
+          "https://galaxygamings.blogspot.com/2024/06/wwe-2k24-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/06/the-godfather-psp-iso.html",
+          "https://galaxygamings.blogspot.com/2024/06/wwe-smackdown-vs-raw-2k14.html",
+          "https://galaxygamings.blogspot.com/2024/06/spider-man-miles-morales-apk.html",
+          "https://galaxygamings.blogspot.com/2024/06/mortal-kombat-unchained.html",
+          "https://galaxygamings.blogspot.com/2024/06/shrek-third-psp.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-13T18:01:29.151470"
+        "last_posted_at": "2026-08-13T19:56:24.039906"
       }
     ],
     "last_upkeep_date": "2026-08-13",
