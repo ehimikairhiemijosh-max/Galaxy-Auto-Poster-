@@ -218,7 +218,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 70,
+    "gemz_balance": 60,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -334,12 +334,17 @@
           "https://galaxygamings.blogspot.com/2024/09/top-20-psp-games-download-highly.html",
           "https://galaxygamings.blogspot.com/2024/09/updated-efootball-pes-2025-ppsspp.html",
           "https://galaxygamings.blogspot.com/2024/09/130mb-highly-compressed-dragon-ball.html",
-          "https://galaxygamings.blogspot.com/2024/09/80mb-highly-compressed-spider-man.html"
+          "https://galaxygamings.blogspot.com/2024/09/80mb-highly-compressed-spider-man.html",
+          "https://galaxygamings.blogspot.com/2024/09/top-10-psp-iso-highly-compressed-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/09/ghost-recon-advanced-warfighter-2-psp.html",
+          "https://galaxygamings.blogspot.com/2024/10/red-dead-redemption-mobile.html",
+          "https://galaxygamings.blogspot.com/2024/12/tmnt-highly-compressed-psp-iso-file.html",
+          "https://galaxygamings.blogspot.com/2024/12/tna-wrestling-impact-highly-compressed.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-13T10:11:31.906118"
+        "last_posted_at": "2026-08-13T11:50:55.223731"
       },
       {
         "channel_id": -1004427720231,
@@ -448,12 +453,17 @@
           "https://galaxygamings.blogspot.com/2024/09/top-20-psp-games-download-highly.html",
           "https://galaxygamings.blogspot.com/2024/09/updated-efootball-pes-2025-ppsspp.html",
           "https://galaxygamings.blogspot.com/2024/09/130mb-highly-compressed-dragon-ball.html",
-          "https://galaxygamings.blogspot.com/2024/09/80mb-highly-compressed-spider-man.html"
+          "https://galaxygamings.blogspot.com/2024/09/80mb-highly-compressed-spider-man.html",
+          "https://galaxygamings.blogspot.com/2024/09/top-10-psp-iso-highly-compressed-ppsspp.html",
+          "https://galaxygamings.blogspot.com/2024/09/ghost-recon-advanced-warfighter-2-psp.html",
+          "https://galaxygamings.blogspot.com/2024/10/red-dead-redemption-mobile.html",
+          "https://galaxygamings.blogspot.com/2024/12/tmnt-highly-compressed-psp-iso-file.html",
+          "https://galaxygamings.blogspot.com/2024/12/tna-wrestling-impact-highly-compressed.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-13T10:11:43.989241"
+        "last_posted_at": "2026-08-13T11:51:07.763928"
       }
     ],
     "last_upkeep_date": "2026-08-13",
