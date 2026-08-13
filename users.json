@@ -263,7 +263,7 @@
     "banned": false,
     "strikes": 2,
     "terms_accepted": true,
-    "gemz_balance": 10,
+    "gemz_balance": 0,
     "extra_channel_slots": false,
     "onboarding": {
       "step": null,
@@ -301,18 +301,23 @@
           "https://galaxygamings.blogspot.com/2024/06/wwe-smackdown-vs-raw-2k14.html",
           "https://galaxygamings.blogspot.com/2024/06/spider-man-miles-morales-apk.html",
           "https://galaxygamings.blogspot.com/2024/06/mortal-kombat-unchained.html",
-          "https://galaxygamings.blogspot.com/2024/06/shrek-third-psp.html"
+          "https://galaxygamings.blogspot.com/2024/06/shrek-third-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/spider-man-total-mayhem-hd.html",
+          "https://galaxygamings.blogspot.com/2024/06/iron-man-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/tekken-6-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/metal-gear-solid-peace-walker-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/ben-10-protector-of-earth-psp-iso.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-13T19:56:12.110517"
+        "last_posted_at": "2026-08-13T21:50:20.358403"
       },
       {
         "channel_id": -1004427720231,
         "title": "Connected channel",
         "blog_feed_url": "https://galaxygamings.blogspot.com/feeds/posts/default",
-        "paused": false,
+        "paused": true,
         "posted": [
           "https://galaxygamings.blogspot.com/2024/05/downhill-domination-ps2-iso-for-android.html",
           "https://galaxygamings.blogspot.com/2024/05/the-dark-knight-rises-mobile.html",
@@ -337,12 +342,17 @@
           "https://galaxygamings.blogspot.com/2024/06/wwe-smackdown-vs-raw-2k14.html",
           "https://galaxygamings.blogspot.com/2024/06/spider-man-miles-morales-apk.html",
           "https://galaxygamings.blogspot.com/2024/06/mortal-kombat-unchained.html",
-          "https://galaxygamings.blogspot.com/2024/06/shrek-third-psp.html"
+          "https://galaxygamings.blogspot.com/2024/06/shrek-third-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/spider-man-total-mayhem-hd.html",
+          "https://galaxygamings.blogspot.com/2024/06/iron-man-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/tekken-6-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/metal-gear-solid-peace-walker-psp.html",
+          "https://galaxygamings.blogspot.com/2024/06/ben-10-protector-of-earth-psp-iso.html"
         ],
         "interval_hours": 1,
         "posts_per_cycle": 5,
         "caption_template": null,
-        "last_posted_at": "2026-08-13T19:56:24.039906"
+        "last_posted_at": "2026-08-13T21:50:32.033665"
       }
     ],
     "last_upkeep_date": "2026-08-13",
