@@ -370,7 +370,7 @@
     "referred_by": null,
     "referral_completed": false,
     "onboarding": {
-      "step": "awaiting_blog",
+      "step": null,
       "pending_channel_id": null
     },
     "channels": [
@@ -389,7 +389,7 @@
       {
         "channel_id": -1003487329011,
         "title": "Connected channel",
-        "blog_feed_url": "",
+        "blog_feed_url": "https://temzygamings.blogspot.com/feeds/posts/default",
         "paused": true,
         "posted": [],
         "interval_hours": null,
@@ -400,7 +400,7 @@
       }
     ],
     "last_nudge_check_date": "2026-08-13",
-    "last_seen_at": "2026-08-13T23:29:43.055633",
+    "last_seen_at": "2026-08-13T23:30:07.897563",
     "last_upkeep_date": "2026-08-13"
   }
 }
