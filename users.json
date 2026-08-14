@@ -256,7 +256,7 @@
       "estimate": {}
     },
     "channels": [],
-    "last_nudge_check_date": "2026-08-13"
+    "last_nudge_check_date": "2026-08-14"
   },
   "8342607225": {
     "is_admin": false,
@@ -355,8 +355,8 @@
         "last_posted_at": "2026-08-13T21:50:32.033665"
       }
     ],
-    "last_upkeep_date": "2026-08-13",
-    "last_nudge_check_date": "2026-08-13",
+    "last_upkeep_date": "2026-08-14",
+    "last_nudge_check_date": "2026-08-14",
     "last_seen_at": "2026-08-13T23:14:57.761797",
     "last_post_now_at": "2026-08-12T23:08:56.518200"
   },
@@ -400,9 +400,9 @@
         "created_at": "2026-08-13T23:27:36.516551"
       }
     ],
-    "last_nudge_check_date": "2026-08-13",
+    "last_nudge_check_date": "2026-08-14",
     "last_seen_at": "2026-08-13T23:34:54.973273",
-    "last_upkeep_date": "2026-08-13",
+    "last_upkeep_date": "2026-08-14",
     "last_post_now_at": "2026-08-13T23:31:39.746232"
   }
 }
