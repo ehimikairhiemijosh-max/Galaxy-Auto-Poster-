@@ -250,7 +250,7 @@
     "banned": false,
     "strikes": 0,
     "terms_accepted": true,
-    "gemz_balance": 500,
+    "gemz_balance": 497,
     "extra_channel_slots": false,
     "referred_by": null,
     "referral_completed": false,
@@ -277,18 +277,22 @@
         "title": "Connected channel",
         "blog_feed_url": "https://temzygamings.blogspot.com/feeds/posts/default",
         "paused": false,
-        "posted": [],
+        "posted": [
+          "https://temzygamings.blogspot.com/2025/04/efootball-pes-2025-ppsspp-full-update.html",
+          "https://temzygamings.blogspot.com/2025/04/wwe-2k25-ppsspp-download-for-android.html",
+          "https://temzygamings.blogspot.com/2025/04/nba-2k25-ppsspp-iso-download-for.html"
+        ],
         "interval_hours": 3,
         "posts_per_cycle": 3,
         "caption_template": null,
-        "last_posted_at": null,
+        "last_posted_at": "2026-08-15T15:22:37.307324",
         "created_at": "2026-08-13T23:27:36.516551"
       }
     ],
     "last_nudge_check_date": "2026-08-15",
-    "last_seen_at": "2026-08-15T15:21:41.130680",
+    "last_seen_at": "2026-08-15T15:22:18.630814",
     "last_upkeep_date": "2026-08-15",
-    "last_post_now_at": "2026-08-15T15:20:35.639860"
+    "last_post_now_at": "2026-08-15T15:22:18.630976"
   },
   "8577777520": {
     "is_admin": false,
