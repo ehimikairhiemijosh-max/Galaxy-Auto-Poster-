@@ -265,7 +265,7 @@
     "banned": false,
     "strikes": 0,
     "terms_accepted": true,
-    "gemz_balance": 497,
+    "gemz_balance": 494,
     "extra_channel_slots": false,
     "referred_by": null,
     "referral_completed": false,
@@ -295,12 +295,15 @@
         "posted": [
           "https://temzygamings.blogspot.com/2025/04/efootball-pes-2025-ppsspp-full-update.html",
           "https://temzygamings.blogspot.com/2025/04/wwe-2k25-ppsspp-download-for-android.html",
-          "https://temzygamings.blogspot.com/2025/04/nba-2k25-ppsspp-iso-download-for.html"
+          "https://temzygamings.blogspot.com/2025/04/nba-2k25-ppsspp-iso-download-for.html",
+          "https://temzygamings.blogspot.com/2025/04/def-jam-fight-for-ny-ppsspp-iso.html",
+          "https://temzygamings.blogspot.com/2025/04/marvel-ultimate-alliance-ppsspp-iso.html",
+          "https://temzygamings.blogspot.com/2025/05/jump-force-ppsspp-download-for-android.html"
         ],
         "interval_hours": 3,
         "posts_per_cycle": 3,
         "caption_template": null,
-        "last_posted_at": "2026-08-15T15:22:37.307324",
+        "last_posted_at": "2026-08-15T18:33:44.151392",
         "created_at": "2026-08-13T23:27:36.516551"
       }
     ],
