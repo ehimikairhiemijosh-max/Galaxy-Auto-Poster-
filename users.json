@@ -286,10 +286,11 @@
     "referred_by": null,
     "referral_completed": false,
     "onboarding": {
-      "step": null,
+      "step": "awaiting_channel",
       "pending_channel_id": null
     },
     "channels": [],
-    "last_nudge_check_date": "2026-08-15"
+    "last_nudge_check_date": "2026-08-15",
+    "last_seen_at": "2026-08-15T08:01:24.236104"
   }
 }
