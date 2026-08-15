@@ -264,7 +264,7 @@
     "is_admin": false,
     "banned": false,
     "strikes": 0,
-    "terms_accepted": false,
+    "terms_accepted": true,
     "gemz_balance": 0,
     "extra_channel_slots": false,
     "referred_by": null,
