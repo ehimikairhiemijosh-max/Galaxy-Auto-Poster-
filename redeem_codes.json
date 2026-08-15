@@ -10,7 +10,7 @@
     "code": "4N0J3C8T",
     "user_id": "6590225931",
     "amount": 500,
-    "used": false,
+    "used": true,
     "created_at": "2026-08-15T13:55:26.008655"
   }
 ]

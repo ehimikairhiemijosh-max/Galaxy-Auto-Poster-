@@ -250,12 +250,12 @@
     "banned": false,
     "strikes": 0,
     "terms_accepted": true,
-    "gemz_balance": 0,
+    "gemz_balance": 500,
     "extra_channel_slots": false,
     "referred_by": null,
     "referral_completed": false,
     "onboarding": {
-      "step": "awaiting_redeem",
+      "step": null,
       "pending_channel_id": null,
       "estimate": {}
     },
@@ -286,7 +286,7 @@
       }
     ],
     "last_nudge_check_date": "2026-08-15",
-    "last_seen_at": "2026-08-15T15:20:15.218113",
+    "last_seen_at": "2026-08-15T15:20:25.113084",
     "last_upkeep_date": "2026-08-15",
     "last_post_now_at": "2026-08-13T23:31:39.746232"
   },
