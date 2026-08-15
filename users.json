@@ -276,7 +276,7 @@
         "channel_id": -1003487329011,
         "title": "Connected channel",
         "blog_feed_url": "https://temzygamings.blogspot.com/feeds/posts/default",
-        "paused": true,
+        "paused": false,
         "posted": [],
         "interval_hours": 3,
         "posts_per_cycle": 3,
