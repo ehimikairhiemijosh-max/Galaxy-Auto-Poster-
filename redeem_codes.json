@@ -17,7 +17,7 @@
     "code": "YKHI98XR",
     "user_id": "8032323080",
     "amount": 700,
-    "used": false,
+    "used": true,
     "created_at": "2026-08-16T09:05:21.627924"
   }
 ]
