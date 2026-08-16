@@ -392,11 +392,25 @@
     "referred_by": null,
     "referral_completed": false,
     "onboarding": {
-      "step": "awaiting_channel",
+      "step": null,
       "pending_channel_id": null
     },
-    "channels": [],
+    "channels": [
+      {
+        "channel_id": -1002685110307,
+        "title": "Connected channel",
+        "blog_feed_url": "",
+        "paused": true,
+        "posted": [],
+        "interval_hours": null,
+        "posts_per_cycle": null,
+        "caption_template": null,
+        "last_posted_at": null,
+        "created_at": "2026-08-16T08:28:04.607484"
+      }
+    ],
     "last_nudge_check_date": "2026-08-16",
-    "last_seen_at": "2026-08-15T08:01:24.236104"
+    "last_seen_at": "2026-08-16T08:28:03.966618",
+    "last_upkeep_date": "2026-08-16"
   }
 }
