@@ -12,5 +12,12 @@
     "amount": 500,
     "used": true,
     "created_at": "2026-08-15T13:55:26.008655"
+  },
+  {
+    "code": "YKHI98XR",
+    "user_id": "8032323080",
+    "amount": 700,
+    "used": false,
+    "created_at": "2026-08-16T09:05:21.627924"
   }
 ]
