@@ -226,7 +226,7 @@
     "gemz_balance": 0,
     "extra_channel_slots": false,
     "onboarding": {
-      "step": "awaiting_blog",
+      "step": null,
       "pending_channel_id": null,
       "estimate": {},
       "pending_order_code": "GGZ-IKEWN5"
@@ -317,7 +317,7 @@
     ],
     "last_upkeep_date": "2026-08-16",
     "last_nudge_check_date": "2026-08-16",
-    "last_seen_at": "2026-08-16T10:05:53.022343",
+    "last_seen_at": "2026-08-16T10:06:04.625101",
     "last_post_now_at": "2026-08-12T23:08:56.518200"
   },
   "6590225931": {
