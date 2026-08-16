@@ -392,7 +392,7 @@
     "referred_by": null,
     "referral_completed": false,
     "onboarding": {
-      "step": null,
+      "step": "awaiting_caption_template",
       "pending_channel_id": null
     },
     "channels": [
