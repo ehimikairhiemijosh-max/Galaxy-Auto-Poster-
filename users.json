@@ -421,7 +421,7 @@
         "channel_id": -1002685110307,
         "title": "Connected channel",
         "blog_feed_url": "https://ppssppvault.blogspot.com/feeds/posts/default",
-        "paused": true,
+        "paused": false,
         "posted": [],
         "interval_hours": 1,
         "posts_per_cycle": 2,
@@ -431,7 +431,7 @@
       }
     ],
     "last_nudge_check_date": "2026-08-16",
-    "last_seen_at": "2026-08-16T09:20:09.935884",
+    "last_seen_at": "2026-08-16T09:20:21.719384",
     "last_upkeep_date": "2026-08-16",
     "last_post_now_at": "2026-08-16T09:11:16.015134"
   }
