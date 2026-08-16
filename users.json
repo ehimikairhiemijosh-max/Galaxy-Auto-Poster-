@@ -413,7 +413,7 @@
     "referred_by": null,
     "referral_completed": false,
     "onboarding": {
-      "step": "awaiting_channel",
+      "step": null,
       "pending_channel_id": null
     },
     "channels": [
@@ -431,10 +431,22 @@
         "caption_template": "{title}\n\n{link}\n\n\n\u2728 Join WhatsApp Channel\n\nhttps://whatsapp.com/channel/0029Var3G7m9cDDVPyUcml1o\n                         &\nhttps://whatsapp.com/channel/0029VbD6sgyKwqSVaowb8t2D\n\n\ud83d\ude80 Join Telegram Channel\n\nhttps://t.me/+EVjajKSYI944NDg0\n                        &\nhttps://t.me/wintergames01",
         "last_posted_at": "2026-08-16T09:20:52.326201",
         "created_at": "2026-08-16T08:28:04.607484"
+      },
+      {
+        "channel_id": -1002328517911,
+        "title": "Connected channel",
+        "blog_feed_url": "",
+        "paused": true,
+        "posted": [],
+        "interval_hours": null,
+        "posts_per_cycle": null,
+        "caption_template": null,
+        "last_posted_at": null,
+        "created_at": "2026-08-16T09:23:05.108138"
       }
     ],
     "last_nudge_check_date": "2026-08-16",
-    "last_seen_at": "2026-08-16T09:22:35.841072",
+    "last_seen_at": "2026-08-16T09:23:04.524075",
     "last_upkeep_date": "2026-08-16",
     "last_post_now_at": "2026-08-16T09:20:41.631516"
   }
