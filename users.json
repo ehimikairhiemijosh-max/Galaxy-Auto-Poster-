@@ -570,10 +570,10 @@
         "channel_id": -1002328517911,
         "title": "Connected channel",
         "blog_feed_url": "https://wintergamesiso.blogspot.com/feeds/posts/default",
-        "paused": true,
+        "paused": false,
         "posted": [],
         "interval_hours": 1,
-        "posts_per_cycle": null,
+        "posts_per_cycle": 2,
         "caption_template": null,
         "last_posted_at": null,
         "created_at": "2026-08-16T09:23:05.108138"
