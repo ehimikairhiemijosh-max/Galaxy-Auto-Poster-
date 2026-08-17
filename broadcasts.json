@@ -235,35 +235,35 @@
     "user_id": "__admin__",
     "message_id": 3273,
     "sent_at": "2026-08-16T23:35:57.346652",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1002353908594,
     "user_id": "__admin__",
     "message_id": 977,
     "sent_at": "2026-08-16T23:35:58.708196",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1002721819829,
     "user_id": "__admin__",
     "message_id": 800,
     "sent_at": "2026-08-16T23:35:59.886862",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1004427720231,
     "user_id": "8342607225",
     "message_id": 935,
     "sent_at": "2026-08-16T23:36:01.101462",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1004427720231,
     "user_id": "8342607225",
     "message_id": 937,
     "sent_at": "2026-08-16T23:36:02.301312",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1003987290425,
