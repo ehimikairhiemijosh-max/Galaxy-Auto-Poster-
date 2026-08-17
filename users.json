@@ -572,7 +572,7 @@
         "blog_feed_url": "https://wintergamesiso.blogspot.com/feeds/posts/default",
         "paused": true,
         "posted": [],
-        "interval_hours": null,
+        "interval_hours": 1,
         "posts_per_cycle": null,
         "caption_template": null,
         "last_posted_at": null,
