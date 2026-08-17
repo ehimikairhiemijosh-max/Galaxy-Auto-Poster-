@@ -270,27 +270,27 @@
     "user_id": "6590225931",
     "message_id": 253,
     "sent_at": "2026-08-16T23:36:03.515802",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1003487329011,
     "user_id": "6590225931",
     "message_id": 1645,
     "sent_at": "2026-08-16T23:36:04.677448",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1002685110307,
     "user_id": "8032323080",
     "message_id": 3275,
     "sent_at": "2026-08-16T23:36:05.878120",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1002328517911,
     "user_id": "8032323080",
     "message_id": 121872,
     "sent_at": "2026-08-16T23:36:07.152099",
-    "checked": false
+    "checked": true
   }
 ]
