@@ -521,7 +521,7 @@
     "referred_by": null,
     "referral_completed": false,
     "onboarding": {
-      "step": null,
+      "step": "awaiting_blog",
       "pending_channel_id": null
     },
     "channels": [
@@ -585,7 +585,7 @@
       }
     ],
     "last_nudge_check_date": "2026-08-17",
-    "last_seen_at": "2026-08-17T10:23:06.626197",
+    "last_seen_at": "2026-08-17T10:23:38.676026",
     "last_upkeep_date": "2026-08-17",
     "last_post_now_at": "2026-08-17T10:21:13.398617"
   }
