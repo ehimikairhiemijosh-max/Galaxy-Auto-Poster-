@@ -144,21 +144,21 @@
     "user_id": "__admin__",
     "message_id": 121866,
     "sent_at": "2026-08-16T23:35:10.009881",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1002392805703,
     "user_id": "__admin__",
     "message_id": 4948,
     "sent_at": "2026-08-16T23:35:11.395073",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1002685110307,
     "user_id": "__admin__",
     "message_id": 3269,
     "sent_at": "2026-08-16T23:35:12.576950",
-    "checked": false
+    "checked": true
   },
   {
     "channel_id": -1002353908594,
