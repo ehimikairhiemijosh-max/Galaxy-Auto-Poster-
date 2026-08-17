@@ -521,7 +521,7 @@
     "referred_by": null,
     "referral_completed": false,
     "onboarding": {
-      "step": "awaiting_blog",
+      "step": null,
       "pending_channel_id": null
     },
     "channels": [
@@ -571,7 +571,7 @@
       {
         "channel_id": -1002328517911,
         "title": "Connected channel",
-        "blog_feed_url": "https://wintergamesiso.blogspot.com/feeds/posts/default",
+        "blog_feed_url": "https://ppssppvault.blogspot.com/feeds/posts/default",
         "paused": false,
         "posted": [
           "https://wintergamesiso.blogspot.com/2024/05/downhill-domination-ps2-iso-for-android.html",
@@ -585,7 +585,7 @@
       }
     ],
     "last_nudge_check_date": "2026-08-17",
-    "last_seen_at": "2026-08-17T10:23:38.676026",
+    "last_seen_at": "2026-08-17T10:24:39.003612",
     "last_upkeep_date": "2026-08-17",
     "last_post_now_at": "2026-08-17T10:21:13.398617"
   }
