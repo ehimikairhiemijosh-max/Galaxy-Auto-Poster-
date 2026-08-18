@@ -263,7 +263,8 @@
       "step": null,
       "pending_channel_id": null,
       "estimate": {
-        "channels": 2
+        "channels": 2,
+        "interval_hours": 6
       }
     },
     "channels": [
