@@ -262,9 +262,11 @@
     "onboarding": {
       "step": null,
       "pending_channel_id": null,
-      "estimate": {
+      "estimate": {},
+      "last_estimate": {
         "channels": 2,
-        "interval_hours": 6
+        "interval_hours": 6,
+        "posts_per_cycle": 3
       }
     },
     "channels": [
