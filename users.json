@@ -260,7 +260,7 @@
     "referred_by": null,
     "referral_completed": false,
     "onboarding": {
-      "step": null,
+      "step": "awaiting_budget_naira",
       "pending_channel_id": null,
       "estimate": {},
       "last_estimate": {
