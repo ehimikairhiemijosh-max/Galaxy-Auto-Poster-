@@ -260,7 +260,7 @@
     "referred_by": null,
     "referral_completed": false,
     "onboarding": {
-      "step": "awaiting_budget_naira",
+      "step": null,
       "pending_channel_id": null,
       "estimate": {},
       "last_estimate": {
@@ -357,7 +357,7 @@
       }
     ],
     "last_nudge_check_date": "2026-08-18",
-    "last_seen_at": "2026-08-18T11:42:52.227265",
+    "last_seen_at": "2026-08-18T11:43:52.738439",
     "last_upkeep_date": "2026-08-18",
     "last_post_now_at": "2026-08-16T08:37:04.229255"
   },
