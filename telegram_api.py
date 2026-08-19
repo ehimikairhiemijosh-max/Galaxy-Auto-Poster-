@@ -18,10 +18,12 @@ def send_message(chat_id, text, reply_markup=None, parse_mode=None):
     return _post("sendMessage", payload)
 
 
-def send_photo(chat_id, photo_url, caption, reply_markup=None):
+def send_photo(chat_id, photo_url, caption, reply_markup=None, parse_mode=None):
     payload = {"chat_id": chat_id, "photo": photo_url, "caption": caption}
     if reply_markup:
         payload["reply_markup"] = _json(reply_markup)
+    if parse_mode:
+        payload["parse_mode"] = parse_mode
     return _post("sendPhoto", payload)
 
 

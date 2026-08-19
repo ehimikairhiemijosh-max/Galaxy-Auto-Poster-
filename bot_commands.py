@@ -23,7 +23,9 @@ from storage import (
 from telegram_api import (
     send_message, get_chat_member, get_chat, get_updates,
     answer_callback, message_still_exists, forward_message, copy_message,
+    send_photo,
 )
+from msg_format import extract_message_content, build_ad_html
 from main import get_feed_entries, ensure_default_admin
 from terms import TERMS_TEXT
 from estimator import estimate_days, format_duration
@@ -62,6 +64,7 @@ def public_more_keyboard():
             ["⏸️ My Channel Pause", "▶️ My Channel Resume"],
             ["🎁 Redeem Code", "📈 Estimate Usage"],
             ["🔗 My Referral Link", "🐛 Report Bug"],
+            ["🗑️ Remove Channel"],
             ["⬅️ Back"],
         ],
         "resize_keyboard": True,
@@ -89,7 +92,8 @@ def advanced_keyboard():
             ["💬 Message User", "📈 Estimate Usage"],
             ["🎟️ Generate Code", "💳 Credit User"],
             ["🔁 Manage Recurring Ads", "📣 Message All"],
-            ["🗑️ Reset History", "📜 Logs"],
+            ["🔓 Unlock Channels", "🗑️ Reset History"],
+            ["📜 Logs"],
             ["⬅️ Back"],
         ],
         "resize_keyboard": True,
@@ -536,6 +540,18 @@ def cmd_help(chat_id, user_id, users):
 
 # ---------------- ONBOARDING: ADD CHANNEL / ADD BLOG ----------------
 
+def cmd_remove_channel_start(chat_id, user_id, users):
+    u = get_user(users, user_id)
+    if not u["channels"]:
+        send_message(chat_id, "You don't have any channels connected yet.")
+        return
+    rows = []
+    for ch in u["channels"]:
+        label = ch.get("title") or str(ch["channel_id"])
+        rows.append([{"text": f"🗑️ {label}", "callback_data": f"rmchan_{ch['channel_id']}"}])
+    send_message(chat_id, "Which channel do you want to remove? This stops all posting to it immediately.", reply_markup={"inline_keyboard": rows})
+
+
 def cmd_add_channel(chat_id, user_id, users):
     u = get_user(users, user_id)
 
@@ -682,18 +698,21 @@ def chat_id_of_bot(u):
 
 # ---------------- BROADCAST + STRIKE SYSTEM ----------------
 
-def _send_broadcast_to_all_channels(users, source_chat_id, source_message_id):
-    """Sends a small 'Advertisement' label followed by a copy of the
-    source message to every connected channel, preserving all original
-    formatting (copyMessage keeps bold/links/quotes exactly as typed).
-    Returns (sent, failed) counts."""
+def _send_broadcast_to_all_channels(users, content):
+    """Sends the ad as ONE message per channel - a native quote-block
+    '📢 ADVERTISEMENT' label at the top, followed by the original content
+    with its formatting (bold/italic/links) preserved. Returns (sent, failed)."""
     broadcasts = load_broadcasts()
     sent, failed = 0, 0
+    html = build_ad_html(content)
 
     for uid, target in users.items():
         for ch in target.get("channels", []):
-            send_message(ch["channel_id"], "📢 𝐀𝐃𝐕𝐄𝐑𝐓𝐈𝐒𝐄𝐌𝐄𝐍𝐓")
-            r = copy_message(ch["channel_id"], source_chat_id, source_message_id)
+            if content["kind"] == "photo":
+                r = send_photo(ch["channel_id"], content["photo_file_id"], html, parse_mode="HTML")
+            else:
+                r = send_message(ch["channel_id"], html, parse_mode="HTML")
+
             if r.get("ok"):
                 sent += 1
                 broadcasts.append({
@@ -732,9 +751,8 @@ def handle_broadcast_message(chat_id, user_id, users, message):
         return False
 
     u["onboarding"]["step"] = None
-    source_chat_id = message["chat"]["id"]
-    source_message_id = message["message_id"]
-    sent, failed = _send_broadcast_to_all_channels(users, source_chat_id, source_message_id)
+    content = extract_message_content(message)
+    sent, failed = _send_broadcast_to_all_channels(users, content)
 
     send_message(chat_id, f"Broadcast sent. Delivered: {sent}, Failed: {failed}", reply_markup=keyboard_for(user_id))
     return True
@@ -880,6 +898,25 @@ def cmd_reset_terms(chat_id, user_id, users, args_text):
     target = get_user(users, target_id)
     target["terms_accepted"] = False
     send_message(chat_id, f"✅ Terms reset for {target_id} - they'll see the ToS prompt again next message.")
+
+
+def cmd_unlock_slots_start(chat_id, user_id, users):
+    if not is_admin(user_id):
+        send_message(chat_id, "Admin only.")
+        return
+    u = get_user(users, user_id)
+    u["onboarding"]["step"] = "awaiting_unlock_slots"
+    send_message(chat_id, f"Send the user ID to raise their channel limit to {MAX_CHANNELS_PAID}.", reply_markup=cancel_only_keyboard())
+
+
+def handle_unlock_slots_message(chat_id, user_id, users, message):
+    u = get_user(users, user_id)
+    if u["onboarding"].get("step") != "awaiting_unlock_slots":
+        return False
+    u["onboarding"]["step"] = None
+    cmd_unlock_slots(chat_id, user_id, users, message.get("text", ""))
+    send_message(chat_id, "Done.", reply_markup=keyboard_for(user_id))
+    return True
 
 
 def cmd_unlock_slots(chat_id, user_id, users, args_text):
@@ -1200,8 +1237,7 @@ def handle_recurring_broadcast_message(chat_id, user_id, users, message):
     scheduled = load_scheduled_broadcasts()
     scheduled.append({
         "id": _generate_code(),
-        "source_chat_id": message["chat"]["id"],
-        "source_message_id": message["message_id"],
+        "content": extract_message_content(message),
         "interval_hours": interval_hours,
         "next_run": now_iso(),
         "created_at": now_iso(),
@@ -1249,7 +1285,7 @@ def run_scheduled_broadcasts(users):
         if datetime.utcnow() < datetime.fromisoformat(s["next_run"]):
             continue
 
-        _send_broadcast_to_all_channels(users, s["source_chat_id"], s["source_message_id"])
+        _send_broadcast_to_all_channels(users, s["content"])
         s["next_run"] = (datetime.utcnow() + timedelta(hours=s["interval_hours"])).isoformat()
         changed = True
 
@@ -1466,6 +1502,8 @@ TEXT_COMMANDS = {
     "🎟️ Generate Code": cmd_gencode_start,
     "🔁 Manage Recurring Ads": cmd_manage_recurring, "/manageads": cmd_manage_recurring,
     "📣 Message All": cmd_message_all_start, "/messageall": cmd_message_all_start,
+    "🔓 Unlock Channels": cmd_unlock_slots_start,
+    "🗑️ Remove Channel": cmd_remove_channel_start,
     "💳 Credit User": cmd_credit_start,
 }
 
@@ -1556,6 +1594,8 @@ def handle_message(message, users):
     if handle_recurring_broadcast_message(chat_id, user_id, users, message):
         return
     if handle_message_all_message(chat_id, user_id, users, message):
+        return
+    if handle_unlock_slots_message(chat_id, user_id, users, message):
         return
     if handle_msguser_id_message(chat_id, user_id, users, message):
         return
@@ -1742,6 +1782,18 @@ def handle_callback(callback, users):
             "\n".join(lines),
             reply_markup={"inline_keyboard": [[{"text": "💰 I Have A Budget (₦)", "callback_data": "enter_budget"}]]},
         )
+        return
+
+    if data.startswith("rmchan_"):
+        target_channel_id = int(data[len("rmchan_"):])
+        u = get_user(users, user_id)
+        before = len(u["channels"])
+        u["channels"] = [c for c in u["channels"] if c["channel_id"] != target_channel_id]
+        if len(u["channels"]) < before:
+            answer_callback(callback["id"], "Removed.")
+            send_message(chat_id, f"✅ Channel removed. It will no longer receive posts.", reply_markup=keyboard_for(user_id))
+        else:
+            answer_callback(callback["id"], "Not found.")
         return
 
     if data.startswith("buy_plan_"):
