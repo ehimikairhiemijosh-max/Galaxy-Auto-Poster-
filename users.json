@@ -208,7 +208,7 @@
       "estimate": {}
     },
     "channels": [],
-    "last_nudge_check_date": "2026-08-24"
+    "last_nudge_check_date": "2026-08-25"
   },
   "8342607225": {
     "is_admin": false,
@@ -307,17 +307,18 @@
         "last_posted_at": "2026-08-13T21:50:32.033665"
       }
     ],
-    "last_upkeep_date": "2026-08-24",
-    "last_nudge_check_date": "2026-08-24",
+    "last_upkeep_date": "2026-08-25",
+    "last_nudge_check_date": "2026-08-25",
     "last_seen_at": "2026-08-17T10:06:29.421992",
-    "last_post_now_at": "2026-08-12T23:08:56.518200"
+    "last_post_now_at": "2026-08-12T23:08:56.518200",
+    "last_nudge_sent_at": "2026-08-25T00:00:02.925917"
   },
   "6590225931": {
     "is_admin": false,
     "banned": false,
     "strikes": 0,
     "terms_accepted": true,
-    "gemz_balance": 302,
+    "gemz_balance": 300,
     "extra_channel_slots": false,
     "referred_by": null,
     "referral_completed": false,
@@ -386,9 +387,9 @@
         "created_at": "2026-08-13T23:27:36.516551"
       }
     ],
-    "last_nudge_check_date": "2026-08-24",
+    "last_nudge_check_date": "2026-08-25",
     "last_seen_at": "2026-08-18T11:43:52.738439",
-    "last_upkeep_date": "2026-08-24",
+    "last_upkeep_date": "2026-08-25",
     "last_post_now_at": "2026-08-16T08:37:04.229255"
   },
   "8577777520": {
@@ -405,14 +406,14 @@
       "pending_channel_id": null
     },
     "channels": [],
-    "last_nudge_check_date": "2026-08-24"
+    "last_nudge_check_date": "2026-08-25"
   },
   "8032323080": {
     "is_admin": false,
     "banned": false,
     "strikes": 0,
     "terms_accepted": true,
-    "gemz_balance": 270,
+    "gemz_balance": 266,
     "extra_channel_slots": false,
     "referred_by": null,
     "referral_completed": false,
@@ -494,10 +495,11 @@
         "created_at": "2026-08-16T09:23:05.108138"
       }
     ],
-    "last_nudge_check_date": "2026-08-24",
+    "last_nudge_check_date": "2026-08-25",
     "last_seen_at": "2026-08-17T10:27:31.375458",
-    "last_upkeep_date": "2026-08-24",
-    "last_post_now_at": "2026-08-17T10:25:31.940794"
+    "last_upkeep_date": "2026-08-25",
+    "last_post_now_at": "2026-08-17T10:25:31.940794",
+    "last_nudge_sent_at": "2026-08-25T00:00:03.671861"
   },
   "8932323080": {
     "is_admin": false,
@@ -513,6 +515,6 @@
       "pending_channel_id": null
     },
     "channels": [],
-    "last_nudge_check_date": "2026-08-24"
+    "last_nudge_check_date": "2026-08-25"
   }
 }
