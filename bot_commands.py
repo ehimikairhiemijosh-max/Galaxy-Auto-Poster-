@@ -4,6 +4,7 @@ Runs every ~5 minutes via GitHub Actions (not an always-on bot).
 """
 
 import requests
+import time
 from datetime import datetime, timedelta, date
 
 from config import (
@@ -12,7 +13,7 @@ from config import (
     API_BASE, MAX_CHANNELS_FREE, MAX_CHANNELS_PAID, PAYMENT_INFO,
     MIN_MONTHLY_PRICE_NAIRA, MIN_YEARLY_PRICE_NAIRA, GEMZ_PACKAGES, NAIRA_PER_GEMZ,
     REFERRAL_REWARD_GEMZ, BOT_USERNAME, GEMZ_COST_PER_CHANNEL_PER_DAY,
-    POST_NOW_COOLDOWN_SECONDS,
+    POST_NOW_COOLDOWN_SECONDS, DELAY_BETWEEN_CHANNELS,
 )
 from storage import (
     load_state, save_state, load_stats, load_users, save_users,
@@ -701,7 +702,10 @@ def chat_id_of_bot(u):
 def _send_broadcast_to_all_channels(users, content):
     """Sends the ad as ONE message per channel - a native quote-block
     '📢 ADVERTISEMENT' label at the top, followed by the original content
-    with its formatting (bold/italic/links) preserved. Returns (sent, failed)."""
+    with its formatting (bold/italic/links) preserved. Includes a small
+    delay between sends - blasting identical content to many channels
+    with zero delay is exactly the pattern Telegram's spam detection
+    flags. Returns (sent, failed)."""
     broadcasts = load_broadcasts()
     sent, failed = 0, 0
     html = build_ad_html(content)
@@ -724,6 +728,8 @@ def _send_broadcast_to_all_channels(users, content):
                 })
             else:
                 failed += 1
+
+            time.sleep(DELAY_BETWEEN_CHANNELS)
 
     save_broadcasts(broadcasts)
     return sent, failed

@@ -117,7 +117,7 @@ GEMZ_PACKAGES = [
 
 # ---------------- REFERRALS ----------------
 REFERRAL_REWARD_GEMZ = 200  # both referrer and new user get this once the referral completes
-BOT_USERNAME = "GalaxyAut0RoBot"  # used to build referral links - update if the bot's @username changes
+BOT_USERNAME = "VyroAgentRo_bot"  # used to build referral links - update if the bot's @username changes
 BROADCAST_GRACE_HOURS = 4    # user has this long before deleting a broadcast counts against them
 STRIKE_LIMIT = 3             # 3rd strike = permanent ban
 
